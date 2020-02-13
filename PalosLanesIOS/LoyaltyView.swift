@@ -1,17 +1,17 @@
 //
-//  AccountView.swift
+//  LoyaltyView.swift
 //  PalosLanesIOS
 //
-//  Created by Kyle Cermak on 2/8/20.
+//  Created by Kyle Cermak on 2/9/20.
 //  Copyright © 2020 Kyle Cermak. All rights reserved.
 //
 
 import SwiftUI
 
-struct AccountView: View {
+struct LoyaltyView: View {
     var body: some View {
         VStack {
-            Text("").navigationBarTitle("ACCOUNT")
+            Text("").navigationBarTitle("LOYALTY")
                     .navigationBarItems(trailing:
                     NavigationLink(destination: AccountView()){
                     Text("My Account")})
@@ -30,8 +30,8 @@ struct AccountView: View {
     }
 }
 
-struct AccountView_Previews: PreviewProvider {
+struct LoyaltyView_Previews: PreviewProvider {
     static var previews: some View {
-        AccountView()
+        LoyaltyView()
     }
 }

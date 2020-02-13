@@ -15,7 +15,17 @@ struct ContentView: View {
     var body: some View {
         NavigationView {
            VStack {
-                Image("logoheader")
+            Text("")
+                .navigationBarTitle("Login")
+                .navigationBarItems(trailing:
+                    Button(action: {
+                        let formattedString = "https://chicagolandbowlingservice.com/privacy-policy"
+                        let url = URL(string: formattedString)!
+                        UIApplication.shared.open(url)
+                    }){
+                        Text("Privacy Policy")
+                })
+            Image("logoheader")
                     .resizable()
                     .scaledToFit()
                 TextField("Enter username", text:$username)
@@ -44,7 +54,7 @@ struct ContentView: View {
                     Text("REGISTER HERE").fontWeight(.semibold)
                 }.frame(minWidth: 0, maxWidth: .infinity, maxHeight: 40)
                     .background(Color(red: 200/255, green: 211/255, blue: 211/255, opacity: 1.0))
-                    .cornerRadius(10)
+                    .cornerRadius(8)
                     .padding([.horizontal, .bottom])
             }.background(Image("approach")
                 .resizable()

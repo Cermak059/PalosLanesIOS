@@ -22,38 +22,47 @@ struct HomeView: View {
                         .scaledToFit()
                 Divider()
                     .frame(height: 5)
-                    .background(Color.red)
+                    .background(Color(red: 75/255, green: 2/255, blue:38/255))
                     .padding(.horizontal)
-                NavigationLink(destination: AccountView()) {
+                NavigationLink(destination: LoyaltyView()) {
                     Image("cermak_panel")
                         .renderingMode(.original)
                         .padding(.top)
                 }
-                NavigationLink(destination: AccountView()) {
+                NavigationLink(destination: LoyaltyView()) {
                     Image("cermak_panel_redeempoints")
                         .renderingMode(.original)
                         .padding(.top, 10)
                 }
-                NavigationLink(destination: AccountView()) {
+                NavigationLink(destination: CouponView()) {
                     Image("cermak_panel_scancoupons")
                         .renderingMode(.original)
                         .padding(.top, 10)
                 }
-                NavigationLink(destination: AccountView()) {
+                NavigationLink(destination: EventView()) {
                     Image("cermak_panel_eventpackages")
                         .renderingMode(.original)
                         .padding(.top, 10)
                 }
                 Divider()
                         .frame(height: 5)
-                        .background(Color.red)
-                    .padding([.top,.horizontal])
+                        .background(Color(red: 75/255, green: 2/255, blue:38/255))
+                        .padding([.top,.horizontal])
                 ScrollView(.horizontal, showsIndicators: true) {
                       HStack {
                            Image("birthdaypic")
                                .resizable()
                                 .frame(width: UIScreen.main.bounds.width, height: 250)
                            Image("beattheclockweb")
+                                .resizable()
+                                .frame(width: UIScreen.main.bounds.width, height: 250)
+                            Image("mondaymadness")
+                                .resizable()
+                                .frame(width: UIScreen.main.bounds.width, height: 250)
+                            Image("wildwednesday")
+                                .resizable()
+                                .frame(width: UIScreen.main.bounds.width, height: 250)
+                            Image("happyhour")
                                 .resizable()
                                 .frame(width: UIScreen.main.bounds.width, height: 250)
                       }
