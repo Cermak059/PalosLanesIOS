@@ -10,13 +10,13 @@ import SwiftUI
 
 struct HomeView: View {
     var body: some View {
-        ScrollView {
             VStack {
                 Text("").navigationBarTitle("HOME")
                         .navigationBarItems(trailing:
                         NavigationLink(destination: AccountView()){
                         Text("My Account")
                     })
+            ScrollView {
                 Image("logoheader")
                         .resizable()
                         .scaledToFit()
