@@ -11,10 +11,13 @@ import Combine
 
 
 struct ContentView: View {
-    @State var username: String = ""
-    @State var password: String = ""
-    @State var remember: Bool = false
-    @State var authenticated: Bool = false
+    @State var username: String = UserDefaults.standard.string(forKey: "SaveUsername") ?? ""
+    @State var password: String = UserDefaults.standard.string(forKey: "SavePassword") ?? ""
+    @State var remember: Bool = true
+    @State var user: Bool = false
+    @State var admin: Bool = false
+    @State private var showingAlert = false
+    @State var message: String = ""
     
     
     init() {
@@ -50,7 +53,20 @@ struct ContentView: View {
                         Text("Remember Me").fontWeight(.thin)
                         }.padding(.leading)
                         Button(action: {
+                            if (self.username.count < 3) {
+                                self.message = "Username must be atleast 3 characters"
+                                self.showingAlert = true
+                            }
+                            else if (self.password.count < 6) {
+                                self.message = "Password must be atleast 6 characters"
+                                self.showingAlert = true
+                            }
+                            else {
                             self.LoginRequest(username: self.username, password: self.password)
+                            if self.remember {
+                                SaveData(username: self.username, password: self.password)
+                                }
+                            }
                         }) {
                             Text("Login").foregroundColor(.black)
                             .frame(minWidth: 0, maxWidth: .infinity, maxHeight: 40)
@@ -60,8 +76,14 @@ struct ContentView: View {
                         }.frame(minWidth: 0, maxWidth: .infinity)
                     }
             
-                NavigationLink(destination: HomeView(), isActive: $authenticated) {
-                    Text("")
+                ZStack {
+                    NavigationLink(destination: HomeView(), isActive: $user) {
+                        Text("")
+                        }.hidden()
+                
+                    NavigationLink(destination: AdminView(), isActive: $admin) {
+                        Text("")
+                        }.hidden()
                 }.hidden()
             
                 NavigationLink(destination: ForgotPassView()) {
@@ -82,9 +104,15 @@ struct ContentView: View {
                 .resizable()
                 .clipped()
                 .edgesIgnoringSafeArea(.all))
+                .alert(isPresented: $showingAlert) {
+                    Alert(title: Text("Login Failed"), message: Text((message)), dismissButton: .default(Text("OK")))
+                }
+        }.onAppear {
+            self.CheckToken()
         }
     }
-
+    
+    
 func LoginRequest(username: String, password: String) {
     
     guard let url = URL(string: "https://chicagolandbowlingservice.com/api/Login") else {return}
@@ -102,20 +130,163 @@ func LoginRequest(username: String, password: String) {
               
               if let httpResponse = response as? HTTPURLResponse{
                   if httpResponse.statusCode == 200{
+                    
+                    guard let data = data else {return}
+                    let finalData = try! JSONDecoder().decode(LoginMessage.self, from: data)
+                    UserDefaults.standard.set(finalData.AccessLevel, forKey: "AccessLevel")
+                    UserDefaults.standard.set(finalData.AuthToken, forKey: "AuthToken")
                       DispatchQueue.main.async {
-                        self.authenticated.toggle()
-                      }
-                      return
+                        if finalData.AccessLevel == "User" {
+                            let AuthToken: String = UserDefaults.standard.string(forKey: "AuthToken") ?? ""
+                            self.GetUserData(AuthToken: AuthToken)
+                        }
+                        else if finalData.AccessLevel == "Admin" {
+                            self.admin.toggle()
+                        }
+                    }
+                    return
                   }
                   if httpResponse.statusCode == 400{
-                  print("Bad Request")
-                  return
-                  }
-              }
-              
-          }.resume()
-    
+                    DispatchQueue.main.async {
+                        if let data = data, let dataString = String(data: data, encoding: .utf8) {
+                            self.message = dataString
+                            self.showingAlert = true
+                        }
+                    }
+                    return
+                }
+                if httpResponse.statusCode == 500{
+                    DispatchQueue.main.async {
+                        self.message = "Oops something went wrong... please try again later"
+                        self.showingAlert = true
+                    }
+                }
+            }
+        }.resume()
     }
+
+    
+func VerifyToken(AuthToken: String) {
+    
+    guard let url = URL(string: "https://chicagolandbowlingservice.com/api/Authenticate") else {return}
+        
+        var request = URLRequest(url: url)
+        request.httpMethod = "GET"
+        request.setValue(AuthToken, forHTTPHeaderField: "X-Auth-Token")
+        
+        URLSession.shared.dataTask(with: request) { (data, response, error) in
+            
+            if let httpResponse = response as? HTTPURLResponse{
+                if httpResponse.statusCode == 200{
+                    DispatchQueue.main.async {
+                        if UserDefaults.standard.string(forKey: "AccessLevel") == "User" {
+                            self.GetUserData(AuthToken: AuthToken)
+                        }
+                        else if UserDefaults.standard.string(forKey: "AccessLevel") == "Admin" {
+                            self.admin.toggle()
+                        }
+                        else {
+                            self.message = "Oops something went wrong... Please login again"
+                            self.showingAlert = true
+                        }
+                    }
+                    return
+                }
+                if httpResponse.statusCode == 401{
+                    DispatchQueue.main.async {
+                        self.message = "Session has expired... Please login again"
+                        self.showingAlert = true
+                        }
+                    return
+                }
+                if httpResponse.statusCode == 500{
+                    DispatchQueue.main.async {
+                        self.message = "Oops something went wrong... please try again later"
+                        self.showingAlert = true
+                        }
+                    return
+                }
+            }
+        }.resume()
+    }
+    
+    
+    func GetUserData(AuthToken: String) {
+    
+    guard let url = URL(string: "https://chicagolandbowlingservice.com/api/Users") else {return}
+        
+        var request = URLRequest(url: url)
+        request.httpMethod = "GET"
+        request.setValue(AuthToken, forHTTPHeaderField: "X-Auth-Token")
+        
+        URLSession.shared.dataTask(with: request) { (data, response, error) in
+            
+            if let httpResponse = response as? HTTPURLResponse{
+                if httpResponse.statusCode == 200{
+                    
+                    guard let data = data else {return}
+                    let finalData = try! JSONDecoder().decode(DataMessage.self, from: data)
+                    UserDefaults.standard.set(finalData.Points, forKey: "SavePoints")
+                    UserDefaults.standard.set(finalData.Username, forKey: "SaveUsername")
+                    UserDefaults.standard.set(finalData.Birthdate, forKey: "SaveBirthdate")
+                    UserDefaults.standard.set(finalData.Email, forKey: "SaveEmail")
+                    UserDefaults.standard.set(finalData.Fname, forKey: "SaveFirst")
+                    UserDefaults.standard.set(finalData.Lname, forKey: "SaveLast")
+                    UserDefaults.standard.set(finalData.Phone, forKey: "SavePhone")
+                    UserDefaults.standard.set(finalData.Type, forKey: "SaveType")
+                    UserDefaults.standard.set(finalData.League, forKey: "SaveLeague")
+                    DispatchQueue.main.async {
+                        self.user.toggle()
+                    }
+                    return
+                }
+                if httpResponse.statusCode == 401{
+                    DispatchQueue.main.async {
+                        self.message = "Session has expired... please login again"
+                        self.showingAlert = true
+                        }
+                    return
+                }
+                if httpResponse.statusCode == 404{
+                    DispatchQueue.main.async {
+                        self.message = "User data was not found...please try again"
+                        self.showingAlert = true
+                        }
+                    return
+                }
+                if httpResponse.statusCode == 500{
+                    DispatchQueue.main.async {
+                        self.message = "Oops something went wrong... please try again later"
+                        self.showingAlert = true
+                        }
+                    return
+                }
+            }
+        }.resume()
+    }
+    
+    
+func CheckToken() {
+       if UserDefaults.standard.string(forKey: "AuthToken") != nil {
+        let AuthToken: String = UserDefaults.standard.string(forKey: "AuthToken") ?? ""
+        VerifyToken(AuthToken: AuthToken)
+        }
+    }
+}
+
+func SaveData(username: String, password: String) {
+    UserDefaults.standard.set(username, forKey: "SaveUsername")
+    UserDefaults.standard.set(password, forKey: "SavePassword")
+}
+
+struct LoginMessage: Decodable {
+    let AuthToken, AccessLevel: String
+}
+
+struct DataMessage: Decodable {
+    let Birthdate, Phone, Username, Email, Fname, Lname, `Type`: String
+    let Points: Int
+    let League: Bool
 }
 
 struct ContentView_Previews: PreviewProvider {

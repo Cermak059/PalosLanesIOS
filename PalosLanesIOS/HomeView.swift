@@ -9,6 +9,7 @@
 import SwiftUI
 
 struct HomeView: View {
+    @State var firstname: String = UserDefaults.standard.string(forKey: "SaveFirst") ?? ""
     var body: some View {
             VStack {
                 Text("").navigationBarTitle("HOME")
@@ -20,6 +21,7 @@ struct HomeView: View {
                 Image("logoheader")
                         .resizable()
                         .scaledToFit()
+                Text("Welcome, \(firstname)").font(.title)
                 Divider()
                     .frame(height: 5)
                     .background(Color(red: 75/255, green: 2/255, blue:38/255))
@@ -75,6 +77,7 @@ struct HomeView: View {
         .edgesIgnoringSafeArea(.all))
     }
 }
+
 
 struct HomeView_Previews: PreviewProvider {
     static var previews: some View {
