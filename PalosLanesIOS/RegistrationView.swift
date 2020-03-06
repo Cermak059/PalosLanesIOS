@@ -76,7 +76,37 @@ struct RegistrationVIew: View {
                         }
                     }
                     Button(action: {
-                        self.RegistrationRequest(username: self.username, password: self.conpass, fname: self.firstname, lname: self.lastname, birthday: self.birthdate, email: self.email, phone: self.phone)
+                        
+                        if (self.firstname.count < 2 || self.lastname.count < 2) {
+                            self.message = "First and last name must be more than 2 characters"
+                            self.showingAlert = true
+                        }
+                        else if(self.birthdate.count != 10) {
+                            self.message = "Birthdate must use format (00/00/0000)"
+                            self.showingAlert = true
+                        }
+                        else if(self.email.count == 0) {
+                            self.message = "Email field cannot be empty"
+                            self.showingAlert = true
+                        }
+                        else if(self.phone.count != 12) {
+                            self.message = "Phone number must use format (123-123-1234)"
+                            self.showingAlert = true
+                        }
+                        else if(self.username.count < 3 || self.username.count > 12 ) {
+                            self.message = "Username must be between 3 and 12 characters"
+                            self.showingAlert = true
+                        }
+                        else if(self.password.count < 6 || self.password.count > 12) {
+                            self.message = "Password must be between 6 and 12 characters"
+                            self.showingAlert = true
+                        }
+                        else {
+                            if self.league {
+                                self.league = true
+                            }
+                            self.RegistrationRequest(username: self.username, password: self.conpass, fname: self.firstname, lname: self.lastname, birthday: self.birthdate, email: self.email, phone: self.phone, league: self.league)
+                            }
                     }) {
                         Text("SUBMIT")
                     }.frame(minWidth: 0, maxWidth: .infinity, maxHeight: 40)
@@ -89,15 +119,15 @@ struct RegistrationVIew: View {
             .clipped()
             .edgesIgnoringSafeArea(.all))
             .alert(isPresented: $showingAlert) {
-                Alert(title: Text("Login Failed"), message: Text((message)), dismissButton: .default(Text("OK")))
+                Alert(title: Text("Registration"), message: Text((message)), dismissButton: .default(Text("OK")))
             }
         }
     
-func RegistrationRequest(username: String, password: String, fname: String, lname: String, birthday: String, email: String, phone: String) {
+    func RegistrationRequest(username: String, password: String, fname: String, lname: String, birthday: String, email: String, phone: String, league: Bool) {
     
-    guard let url = URL(string: "https://chicagolandbowlingservice.com/api/Register") else {return}
+        guard let url = URL(string: "https://chicagolandbowlingservice.com/api/Register") else {return}
           
-        let body: [String: String] = ["Fname": fname, "Lname":lname, "Birthdate": birthday, "Email" : email, "Phone": phone, "Username": username, "Password": password]
+        let body: [String: Any] = ["Fname": fname, "Lname":lname, "Birthdate": birthday, "Email" : email, "Phone": phone, "League": league, "Username": username, "Password": password]
           
           let finalbody = try! JSONSerialization.data(withJSONObject: body)
           
