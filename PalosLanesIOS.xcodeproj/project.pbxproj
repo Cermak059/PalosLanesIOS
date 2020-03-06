@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		6A0ACEFF2412F3B70076516A /* AdminView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A0ACEFE2412F3B70076516A /* AdminView.swift */; };
 		6A0E1A3023EE77E10005D57E /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A0E1A2F23EE77E10005D57E /* HomeView.swift */; };
 		6A1286C123EE4C8000541E59 /* ForgotPassView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A1286C023EE4C8000541E59 /* ForgotPassView.swift */; };
 		6A1F2F3B23EDD16F00F248C3 /* RegistrationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A1F2F3A23EDD16F00F248C3 /* RegistrationView.swift */; };
@@ -26,7 +25,6 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		6A0ACEFE2412F3B70076516A /* AdminView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdminView.swift; sourceTree = "<group>"; };
 		6A0E1A2F23EE77E10005D57E /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		6A1286C023EE4C8000541E59 /* ForgotPassView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForgotPassView.swift; sourceTree = "<group>"; };
 		6A1F2F3A23EDD16F00F248C3 /* RegistrationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegistrationView.swift; sourceTree = "<group>"; };
@@ -89,7 +87,6 @@
 				6A6B87AC23F0FB4400E63BEC /* LoyaltyView.swift */,
 				6A6B87AE23F0FCFF00E63BEC /* CouponView.swift */,
 				6A6B87B023F0FD9600E63BEC /* EventView.swift */,
-				6A0ACEFE2412F3B70076516A /* AdminView.swift */,
 				6A80934623ECB4DF00F38BCA /* Assets.xcassets */,
 				6A80934823ECB4DF00F38BCA /* Preview Content */,
 			);
@@ -183,7 +180,6 @@
 			files = (
 				6A1286C123EE4C8000541E59 /* ForgotPassView.swift in Sources */,
 				6A6B87AD23F0FB4400E63BEC /* LoyaltyView.swift in Sources */,
-				6A0ACEFF2412F3B70076516A /* AdminView.swift in Sources */,
 				6A6B87B123F0FD9600E63BEC /* EventView.swift in Sources */,
 				6A6B87AF23F0FCFF00E63BEC /* CouponView.swift in Sources */,
 				6A0E1A3023EE77E10005D57E /* HomeView.swift in Sources */,
