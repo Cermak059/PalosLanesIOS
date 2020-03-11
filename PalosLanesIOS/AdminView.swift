@@ -173,6 +173,45 @@ struct AdminView: View {
             }
         }.resume()
     }
+}
+
+struct AddPickerView: View {
+    
+    @State var showingAlert: Bool = false
+    @State var message: String = ""
+    @Binding var account: String
+    @State var AuthToken: String = (UserDefaults.standard.string(forKey: "AuthToken") ?? nil) ?? ""
+    
+    @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
+
+    var strengths = ["0 pts", "1 game: 100 pts", "2 games: 200 pts", "3 games: 300 pts", "4 games: 400 pts", "5 games: 500 pts", "6 games: 600 pts", "7 games: 700 pts", "8 games: 800 pts", "9 games: 900 pts", "10 games: 1000 pts"]
+
+    @State private var selectedPoints = 1
+
+    var body: some View {
+        NavigationView {
+            VStack {
+                Group {
+                    Picker(selection: $selectedPoints, label: Text("")) {
+                        ForEach(0 ..< strengths.count) {
+                        Text(self.strengths[$0]).tag($0)
+                            }
+                        }
+                        Button(action: {
+                            let points = self.selectedPoints * 100
+                            self.PointsRequest(points: points, email: self.account)
+                        }) {
+                            Text("Confirm")
+                        }.frame(minWidth: 0, maxWidth: .infinity, maxHeight: 40)
+                        .background(Color(red: 200/255, green: 211/255, blue: 211/255, opacity: 1.0))
+                        .cornerRadius(10)
+                        .padding([.horizontal, .top])
+                }.navigationBarTitle("ADD POINTS")
+            }.alert(isPresented: $showingAlert) {
+                Alert(title: Text("Alert"), message: Text((message)), dismissButton: .default(Text("OK")))
+            }
+        }
+    }
     
     func PointsRequest(points: Int, email: String) {
         
@@ -197,7 +236,7 @@ struct AdminView: View {
                       DispatchQueue.main.async {
                         self.message = "Success"
                         self.showingAlert = true
-                        print("Success")
+                        //self.presentationMode.wrappedValue.dismiss()
                     }
                     return
                   }
@@ -228,50 +267,12 @@ struct AdminView: View {
     }
 }
 
-struct AddPickerView: View {
-    
-    @State var showingAlert: Bool = false
-    @State var message: String = ""
-    @Binding var account: String
-    let Admin = AdminView()
-    
-    @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
-
-    var strengths = ["0 pts", "1 game: 100 pts", "2 games: 200 pts", "3 games: 300 pts", "4 games: 400 pts", "5 games: 500 pts", "6 games: 600 pts", "7 games: 700 pts", "8 games: 800 pts", "9 games: 900 pts", "10 games: 1000 pts"]
-
-    @State private var selectedPoints = 1
-
-    var body: some View {
-        NavigationView {
-            VStack {
-                Group {
-                    Picker(selection: $selectedPoints, label: Text("")) {
-                        ForEach(0 ..< strengths.count) {
-                        Text(self.strengths[$0]).tag($0)
-                            }
-                        }
-                        Button(action: {
-                            self.presentationMode.wrappedValue.dismiss()
-                            let points = self.selectedPoints * 100
-                            self.Admin.PointsRequest(points: points, email: self.account)
-                        }) {
-                            Text("Confirm")
-                        }.frame(minWidth: 0, maxWidth: .infinity, maxHeight: 40)
-                        .background(Color(red: 200/255, green: 211/255, blue: 211/255, opacity: 1.0))
-                        .cornerRadius(10)
-                        .padding([.horizontal, .top])
-                }.navigationBarTitle("ADD POINTS")
-            }.alert(isPresented: $showingAlert) {
-                Alert(title: Text("Alert"), message: Text((message)), dismissButton: .default(Text("OK")))
-            }
-        }
-    }
-}
-
 struct SubtractPickerView: View {
     
     @Binding var account: String
-    let Admin = AdminView()
+    @State var showingAlert: Bool = false
+    @State var message: String = ""
+    @State var AuthToken: String = (UserDefaults.standard.string(forKey: "AuthToken") ?? nil) ?? ""
        
     @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
     
@@ -289,9 +290,8 @@ struct SubtractPickerView: View {
                         }
                     }
                     Button(action: {
-                        self.presentationMode.wrappedValue.dismiss()
                         let points = self.selectedPoints * -500
-                        self.Admin.PointsRequest(points: points, email: self.account)
+                        self.PointsRequest(points: points, email: self.account)
                     }) {
                         Text("Confirm")
                     }.frame(minWidth: 0, maxWidth: .infinity, maxHeight: 40)
@@ -299,8 +299,63 @@ struct SubtractPickerView: View {
                     .cornerRadius(10)
                     .padding([.horizontal, .top])
                 }.navigationBarTitle("SUBTRACT POINTS")
+            }.alert(isPresented: $showingAlert) {
+                Alert(title: Text("Alert"), message: Text((message)), dismissButton: .default(Text("OK")))
             }
         }
+    }
+    
+    func PointsRequest(points: Int, email: String) {
+        
+        guard let url = URL(string: "https://chicagolandbowlingservice.com/api/Points") else {return}
+          
+        let body: [String: Any] = ["Points": points, "Email": email]
+              
+            let finalbody = try! JSONSerialization.data(withJSONObject: body)
+              
+            var request = URLRequest(url: url)
+            request.httpMethod = "POST"
+            request.httpBody = finalbody
+            request.setValue(AuthToken, forHTTPHeaderField: "X-Auth-Token")
+            request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+          
+            URLSession.shared.dataTask(with: request) { (data, response, error) in
+              
+              if let httpResponse = response as? HTTPURLResponse{
+                  if httpResponse.statusCode == 200{
+                    //guard let data = data else {return}
+                    //let finalData = try! JSONDecoder().decode(ServerMessage.self, from: data)
+                      DispatchQueue.main.async {
+                        self.message = "Success"
+                        self.showingAlert = true
+                        //self.presentationMode.wrappedValue.dismiss()
+                    }
+                    return
+                  }
+                  if httpResponse.statusCode == 400{
+                    DispatchQueue.main.async {
+                        if let data = data, let dataString = String(data: data, encoding: .utf8) {
+                            self.message = dataString
+                            self.showingAlert = true
+                        }
+                    }
+                    return
+                }
+                if httpResponse.statusCode == 401{
+                    DispatchQueue.main.async {
+                            self.message = "Unauthorized to complete this request"
+                            self.showingAlert = true
+                    }
+                    return
+                }
+                if httpResponse.statusCode == 500{
+                    DispatchQueue.main.async {
+                        self.message = "Oops something went wrong... please try again later"
+                        self.showingAlert = true
+                    }
+                }
+            }
+        }.resume()
     }
 }
     

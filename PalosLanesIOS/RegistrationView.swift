@@ -7,6 +7,7 @@
 //
 
 import SwiftUI
+import Foundation
 
 struct RegistrationVIew: View {
     @State var firstname: String = ""
@@ -20,6 +21,9 @@ struct RegistrationVIew: View {
     @State var conpass: String = ""
     @State private var showingAlert = false
     @State var message: String = ""
+    
+    var validation = Validation()
+    
     var body: some View {
         ScrollView {
                 VStack {
@@ -77,34 +81,54 @@ struct RegistrationVIew: View {
                     }
                     Button(action: {
                         
-                        if (self.firstname.count < 2 || self.lastname.count < 2) {
-                            self.message = "First and last name must be more than 2 characters"
+                        let isValidateName = self.validation.validateName(name: self.firstname)
+                        let isValidateLastName = self.validation.validateLastName(name: self.lastname)
+                        let isValidateBirthdate = self.validation.validateBirthdate(name: self.birthdate)
+                        let isValidatePhone = self.validation.validatePhone(name: self.phone)
+                        let isValidateUsername = self.validation.validateUsername(name: self.username)
+                        let isValidatePassword = self.validation.validatePassword(name: self.password)
+                        
+                        if (isValidateName == false) {
+                           self.message = "First name must be between 2 and 12 alphabetical characters"
+                           self.showingAlert = true
+                        }
+                        else if (isValidateLastName == false) {
+                            self.message = "Last name must be between 2 and 12 alphabetical characters"
                             self.showingAlert = true
                         }
-                        else if(self.birthdate.count != 10) {
-                            self.message = "Birthdate must use format (00/00/0000)"
+                        else if (isValidateBirthdate == false) {
+                            self.message = "Birthdate format must be 00/00/0000"
                             self.showingAlert = true
                         }
-                        else if(self.email.count == 0) {
+                        else if (self.email.count == 0) {
                             self.message = "Email field cannot be empty"
                             self.showingAlert = true
                         }
-                        else if(self.phone.count != 12) {
-                            self.message = "Phone number must use format (123-123-1234)"
+                        else if (isValidatePhone == false) {
+                            self.message = "Phone number format must be 000-000-0000"
                             self.showingAlert = true
                         }
-                        else if(self.username.count < 3 || self.username.count > 12 ) {
+                        else if (self.username.count < 3 || self.username.count > 12) {
                             self.message = "Username must be between 3 and 12 characters"
                             self.showingAlert = true
                         }
-                        else if(self.password.count < 6 || self.password.count > 12) {
+                        else if (isValidateUsername == false) {
+                            self.message = "Username must not have special characters"
+                            self.showingAlert = true
+                        }
+                        else if (self.password.count < 6 || self.password.count > 12) {
                             self.message = "Password must be between 6 and 12 characters"
                             self.showingAlert = true
                         }
+                        else if (isValidatePassword == false) {
+                            self.message = "Password must not use special characters"
+                            self.showingAlert = true
+                        }
+                        else if (self.password != self.conpass) {
+                            self.message = "Passwords do not match"
+                            self.showingAlert = true
+                        }
                         else {
-                            if self.league {
-                                self.league = true
-                            }
                             self.RegistrationRequest(username: self.username, password: self.conpass, fname: self.firstname, lname: self.lastname, birthday: self.birthdate, email: self.email, phone: self.phone, league: self.league)
                             }
                     }) {
@@ -140,7 +164,6 @@ struct RegistrationVIew: View {
               
               if let httpResponse = response as? HTTPURLResponse{
                   if httpResponse.statusCode == 200{
-                    
                     //guard let data = data else {return}
                     //let finalData = try! JSONDecoder().decode(ServerMessage.self, from: data)
                     DispatchQueue.main.async {
@@ -167,6 +190,57 @@ struct RegistrationVIew: View {
             }
         }.resume()
     }
+}
+
+class Validation {
+public func validateName(name: String) ->Bool {
+   // Length be 18 characters max and 3 characters minimum, you can always modify.
+   let nameRegex = "^[A-Za-z]{2,12}$"
+   let trimmedString = name.trimmingCharacters(in: .whitespaces)
+   let validateName = NSPredicate(format: "SELF MATCHES %@", nameRegex)
+   let isValidateName = validateName.evaluate(with: trimmedString)
+   return isValidateName
+    }
+public func validateLastName(name: String) ->Bool {
+    // Length be 18 characters max and 3 characters minimum, you can always modify.
+    let nameRegex = "^[A-Za-z]{2,12}$"
+    let trimmedString = name.trimmingCharacters(in: .whitespaces)
+    let validateName = NSPredicate(format: "SELF MATCHES %@", nameRegex)
+    let isValidateName = validateName.evaluate(with: trimmedString)
+    return isValidateName
+    }
+public func validateBirthdate(name: String) ->Bool {
+    // Length be 18 characters max and 3 characters minimum, you can always modify.
+    let nameRegex = "^[0-9]{2}/[0-9]{2}/[0-9]{4}$"
+    let trimmedString = name.trimmingCharacters(in: .whitespaces)
+    let validateName = NSPredicate(format: "SELF MATCHES %@", nameRegex)
+    let isValidateName = validateName.evaluate(with: trimmedString)
+    return isValidateName
+     }
+public func validatePhone(name: String) ->Bool {
+    // format must be 000-000-0000 and only numerical characters
+    let nameRegex = "^[0-9]{3}-[0-9]{3}-[0-9]{4}$"
+    let trimmedString = name.trimmingCharacters(in: .whitespaces)
+    let validateName = NSPredicate(format: "SELF MATCHES %@", nameRegex)
+    let isValidateName = validateName.evaluate(with: trimmedString)
+    return isValidateName
+     }
+public func validateUsername(name: String) ->Bool {
+    // format is no special characters
+    let nameRegex = "^[A-Za-z0-9]{3,12}$"
+    let trimmedString = name.trimmingCharacters(in: .whitespaces)
+    let validateName = NSPredicate(format: "SELF MATCHES %@", nameRegex)
+    let isValidateName = validateName.evaluate(with: trimmedString)
+    return isValidateName
+     }
+public func validatePassword(name: String) ->Bool {
+    // format is no special characters
+    let nameRegex = "^[A-Za-z0-9]{6,12}$"
+    let trimmedString = name.trimmingCharacters(in: .whitespaces)
+    let validateName = NSPredicate(format: "SELF MATCHES %@", nameRegex)
+    let isValidateName = validateName.evaluate(with: trimmedString)
+    return isValidateName
+     }
 }
 
 struct RegistrationVIew_Previews: PreviewProvider {

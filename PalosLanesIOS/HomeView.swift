@@ -26,25 +26,45 @@ struct HomeView: View {
                     .frame(height: 5)
                     .background(Color(red: 75/255, green: 2/255, blue:38/255))
                     .padding(.horizontal)
-                NavigationLink(destination: LoyaltyView()) {
-                    Image("cermak_panel")
-                        .renderingMode(.original)
-                        .padding(.top)
-                }
-                NavigationLink(destination: LoyaltyView()) {
-                    Image("cermak_panel_redeempoints")
-                        .renderingMode(.original)
-                        .padding(.top, 10)
-                }
-                NavigationLink(destination: CouponView()) {
-                    Image("cermak_panel_scancoupons")
-                        .renderingMode(.original)
-                        .padding(.top, 10)
-                }
-                NavigationLink(destination: EventView()) {
-                    Image("cermak_panel_eventpackages")
-                        .renderingMode(.original)
-                        .padding(.top, 10)
+                VStack {
+                    NavigationLink(destination: LoyaltyView()) {
+                        Image("cermak_panel")
+                            .renderingMode(.original)
+                            .padding(.top)
+                    }
+                    NavigationLink(destination: LoyaltyView()) {
+                        Image("cermak_panel_redeempoints")
+                            .renderingMode(.original)
+                            .padding(.top, 10)
+                    }
+                    NavigationLink(destination: CouponView()) {
+                        Image("cermak_panel_scancoupons")
+                            .renderingMode(.original)
+                            .padding(.top, 10)
+                    }
+                    NavigationLink(destination: EventView()) {
+                        Image("cermak_panel_eventpackages")
+                            .renderingMode(.original)
+                            .padding(.top, 10)
+                    }
+                    Button(action: {
+                        let formattedString = "http://www.paloslanes.net/leaguestandings1.htm"
+                        let url = URL(string: formattedString)!
+                        UIApplication.shared.open(url)
+                    }){
+                        Image("cermak_panel_leaguestandings")
+                            .renderingMode(.original)
+                            .padding(.top, 10)
+                    }
+                    Button(action: {
+                        let formattedString = "http://www.paloslanes.net/leagues1.htm"
+                        let url = URL(string: formattedString)!
+                        UIApplication.shared.open(url)
+                    }) {
+                        Image("cermak_panel_leaguesignup")
+                            .renderingMode(.original)
+                            .padding(.top, 10)
+                    }
                 }
                 Divider()
                         .frame(height: 5)
