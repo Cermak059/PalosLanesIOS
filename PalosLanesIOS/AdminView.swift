@@ -203,9 +203,17 @@ struct AddPickerView: View {
                         }) {
                             Text("Confirm")
                         }.frame(minWidth: 0, maxWidth: .infinity, maxHeight: 40)
-                        .background(Color(red: 200/255, green: 211/255, blue: 211/255, opacity: 1.0))
-                        .cornerRadius(10)
-                        .padding([.horizontal, .top])
+                            .background(Color(red: 200/255, green: 211/255, blue: 211/255, opacity: 1.0))
+                            .cornerRadius(10)
+                            .padding([.horizontal, .top])
+                        Button(action: {
+                            self.presentationMode.wrappedValue.dismiss()
+                        }) {
+                            Text("Close")
+                        }.frame(minWidth: 0, maxWidth: .infinity, maxHeight: 40)
+                            .background(Color(red: 200/255, green: 211/255, blue: 211/255, opacity: 1.0))
+                            .cornerRadius(10)
+                            .padding([.horizontal, .top])
                 }.navigationBarTitle("ADD POINTS")
             }.alert(isPresented: $showingAlert) {
                 Alert(title: Text("Alert"), message: Text((message)), dismissButton: .default(Text("OK")))
@@ -295,9 +303,18 @@ struct SubtractPickerView: View {
                     }) {
                         Text("Confirm")
                     }.frame(minWidth: 0, maxWidth: .infinity, maxHeight: 40)
-                    .background(Color(red: 200/255, green: 211/255, blue: 211/255, opacity: 1.0))
-                    .cornerRadius(10)
-                    .padding([.horizontal, .top])
+                        .background(Color(red: 200/255, green: 211/255, blue: 211/255, opacity: 1.0))
+                        .cornerRadius(10)
+                        .padding([.horizontal, .top])
+                    
+                    Button(action: {
+                        self.presentationMode.wrappedValue.dismiss()
+                   }) {
+                       Text("Close")
+                   }.frame(minWidth: 0, maxWidth: .infinity, maxHeight: 40)
+                        .background(Color(red: 200/255, green: 211/255, blue: 211/255, opacity: 1.0))
+                        .cornerRadius(10)
+                        .padding([.horizontal, .top])
                 }.navigationBarTitle("SUBTRACT POINTS")
             }.alert(isPresented: $showingAlert) {
                 Alert(title: Text("Alert"), message: Text((message)), dismissButton: .default(Text("OK")))
@@ -323,12 +340,9 @@ struct SubtractPickerView: View {
               
               if let httpResponse = response as? HTTPURLResponse{
                   if httpResponse.statusCode == 200{
-                    //guard let data = data else {return}
-                    //let finalData = try! JSONDecoder().decode(ServerMessage.self, from: data)
                       DispatchQueue.main.async {
                         self.message = "Success"
                         self.showingAlert = true
-                        //self.presentationMode.wrappedValue.dismiss()
                     }
                     return
                   }
