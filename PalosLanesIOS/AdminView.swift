@@ -123,7 +123,7 @@ struct AdminView: View {
     
     func BOGOrequest(email: String) {
         
-        guard let url = URL(string: "https://chicagolandbowlingservice.com/api/BuyOneGetOne") else {return}
+        guard let url = URL(string: "http://3.15.199.174:5000/OneFreeGame") else {return}
           
             let body: [String: String] = ["Email": email]
               

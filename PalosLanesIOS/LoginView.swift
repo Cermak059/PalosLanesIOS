@@ -68,7 +68,7 @@ struct ContentView: View {
                                 }
                             }
                         }) {
-                            Text("Login").foregroundColor(.black)
+                            Text("Login").foregroundColor(Color(red: 75/255, green: 2/255, blue:38/255))
                             .frame(minWidth: 0, maxWidth: .infinity, maxHeight: 40)
                             .background(Color(red: 200/255, green: 200/255, blue: 200/255, opacity: 1.0))
                             .cornerRadius(8)
@@ -88,6 +88,7 @@ struct ContentView: View {
             
                 NavigationLink(destination: ForgotPassView()) {
                     Text("FORGOT PASSWORD?")
+                        .foregroundColor(Color(red: 75/255, green: 2/255, blue:38/255))
                     }.padding()
 
                 Spacer()
@@ -95,6 +96,7 @@ struct ContentView: View {
                 Text("Don't have an account with us?")
                 NavigationLink(destination: RegistrationVIew()) {
                     Text("REGISTER HERE").fontWeight(.semibold)
+                        .foregroundColor(Color(red: 75/255, green: 2/255, blue:38/255))
                     }.frame(minWidth: 0, maxWidth: .infinity, maxHeight: 40)
                      .background(Color(red: 200/255, green: 211/255, blue: 211/255, opacity: 1.0))
                      .cornerRadius(8)
@@ -133,6 +135,7 @@ func LoginRequest(username: String, password: String) {
                     
                     guard let data = data else {return}
                     let finalData = try! JSONDecoder().decode(LoginMessage.self, from: data)
+                    
                     UserDefaults.standard.set(finalData.AccessLevel, forKey: "AccessLevel")
                     UserDefaults.standard.set(finalData.AuthToken, forKey: "AuthToken")
                       DispatchQueue.main.async {

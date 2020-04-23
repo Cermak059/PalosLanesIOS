@@ -36,10 +36,11 @@ struct EventView: View {
                     }
                 }
             Divider()
-                    .frame(height: 5)
-                    .background(Color(red: 75/255, green: 2/255, blue:38/255))
-                    .padding(.horizontal)
+                .frame(height: 5)
+                .background(Color(red: 75/255, green: 2/255, blue:38/255))
+                .padding(.horizontal)
             Text("Call us at 708-974-3200 for availability")
+                .foregroundColor(Color(red: 75/255, green: 2/255, blue:38/255))
             Spacer()
         }.background(Image("approach")
         .resizable()

@@ -21,11 +21,18 @@ struct HomeView: View {
                 Image("logoheader")
                         .resizable()
                         .scaledToFit()
-                Text("Welcome, \(firstname)").font(.title)
+                Text("Welcome, \(firstname)")
+                    .font(.headline)
+                    .fontWeight(.semibold)
+                    .foregroundColor(Color(red: 75/255, green: 2/255, blue:38/255))
                 Divider()
                     .frame(height: 5)
                     .background(Color(red: 75/255, green: 2/255, blue:38/255))
                     .padding(.horizontal)
+                Text("Bowl, Earn and Redeem!")
+                    .font(.headline)
+                    .fontWeight(.semibold)
+                    .foregroundColor(Color(red: 75/255, green: 2/255, blue:38/255))
                 VStack {
                     NavigationLink(destination: LoyaltyView()) {
                         Image("cermak_panel")
@@ -67,9 +74,9 @@ struct HomeView: View {
                     }
                 }
                 Divider()
-                        .frame(height: 5)
-                        .background(Color(red: 75/255, green: 2/255, blue:38/255))
-                        .padding([.top,.horizontal])
+                    .frame(height: 5)
+                    .background(Color(red: 75/255, green: 2/255, blue:38/255))
+                    .padding([.top,.horizontal])
                 ScrollView(.horizontal, showsIndicators: true) {
                       HStack {
                            Image("birthdaypic")
@@ -89,6 +96,14 @@ struct HomeView: View {
                                 .frame(width: UIScreen.main.bounds.width, height: 250)
                       }
                 }
+                Divider()
+                   .frame(height: 5)
+                   .background(Color(red: 75/255, green: 2/255, blue:38/255))
+                   .padding([.horizontal])
+                Text("Palos Lanes \n 11025 Southwest Highway \n Palos Hills, IL. 60465")
+                    .multilineTextAlignment(.center)
+                    .foregroundColor(Color(red: 75/255, green: 2/255, blue:38/255))
+                
                 Spacer()
             }
         }.background(Image("approach")

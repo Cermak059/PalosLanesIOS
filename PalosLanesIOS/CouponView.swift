@@ -18,9 +18,13 @@ struct CouponView: View {
     @State var showingAlert: Bool = false
     @State var AuthToken: String = (UserDefaults.standard.string(forKey: "AuthToken") ?? nil) ?? ""
     @State var email: String = UserDefaults.standard.string(forKey: "SaveEmail") ?? ""
-    @State var isCoupon: Bool = false
+    @State var isBOGOcoupon: Bool = true
+    @State var isTHANKScoupon:Bool = true
     @State var isUsed: Bool = false
-    @State var showQR: Bool = false
+    @State var BOGOshowQR: Bool = false
+    @State var THANKSshowQR: Bool = false
+    @State var modalSelection = 1
+    @State var showModal: Bool = false
     
     var body: some View {
         VStack {
@@ -28,50 +32,77 @@ struct CouponView: View {
                     .navigationBarItems(trailing:
                     NavigationLink(destination: AccountView()){
                     Text("My Account")})
-            Image("logoheader")
-                    .resizable()
-                    .scaledToFit()
-            Divider()
-                .frame(height: 5)
-                .background(Color(red: 75/255, green: 2/255, blue:38/255))
-                .padding(.horizontal)
-            if isCoupon {
-                Button(action: {
-                    self.showQR = true
-                }) {
-                    Image("bogoimagecopy")
-                    .renderingMode(.original)
-                    .padding()
+            ScrollView {
+                Image("logoheader")
+                        .resizable()
+                        .scaledToFit()
+                Divider()
+                    .frame(height: 5)
+                    .background(Color(red: 75/255, green: 2/255, blue:38/255))
+                    .padding(.horizontal)
+                if isBOGOcoupon {
+                    Button(action: {
+                        self.modalSelection = 1
+                        self.showModal = true
+                    }) {
+                        Image("bogoimagecopy")
+                        .renderingMode(.original)
+                        .padding()
+                    }
                 }
+                if isTHANKScoupon {
+                    Button(action: {
+                        self.modalSelection = 2
+                        self.showModal = true
+                   }) {
+                       Image("Cermak_ThankYouCoupon")
+                       .renderingMode(.original)
+                       .padding()
+                   }
+               }
+                if isUsed {
+                    Text("Oops Sorry! You have already used your coupon for this week!")
+                        .padding(.horizontal)
+                        .multilineTextAlignment(.center)
+                        .foregroundColor(Color(red: 75/255, green: 2/255, blue:38/255))
+                    Image("errorsymbol")
+                }
+                Spacer()
             }
-            if isUsed {
-                Text("Oops you have already used your coupon for this week!").padding(.horizontal)
-                Image("errorsymbol")
-            }
-            Spacer()
         }.background(Image("approach")
         .resizable()
         .clipped()
         .edgesIgnoringSafeArea(.all))
-        .sheet(isPresented: $showQR, content: {
-            VStack {
-                Text("Please scan this QR code")
-                Image(uiImage: self.generateQRCode(from: "\(self.email)"))
-                .interpolation(.none)
-                .resizable()
-                .scaledToFit()
-                .frame(width: 200, height: 200)
-                
+        .sheet(isPresented: $showModal, content: {
+            if self.modalSelection == 1 {
+                VStack {
+                    Text("Please scan this BOGO QR code")
+                    Image(uiImage: self.generateQRCode(from: "\(self.email)\n\("BOGO")"))
+                    .interpolation(.none)
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 200, height: 200)
+                }
+            }
+            if self.modalSelection == 2 {
+                VStack {
+                   Text("Please scan this one time QR code")
+                   Image(uiImage: self.generateQRCode(from: "\(self.email)\n\("Thank You")"))
+                   .interpolation(.none)
+                   .resizable()
+                   .scaledToFit()
+                   .frame(width: 200, height: 200)
+               }
             }
         })
         .onAppear() {
-            self.GetCoupon(AuthToken: self.AuthToken)
+            self.GetCoupons(AuthToken: self.AuthToken)
         }
     }
     
-    func GetCoupon(AuthToken: String) {
+    func GetCoupons(AuthToken: String) {
     
-    guard let url = URL(string: "https://chicagolandbowlingservice.com/api/BuyOneGetOne") else {return}
+    guard let url = URL(string: "http://3.15.199.174:5000/CheckAllCoupons") else {return}
         
         var request = URLRequest(url: url)
         request.httpMethod = "GET"
@@ -80,11 +111,19 @@ struct CouponView: View {
         URLSession.shared.dataTask(with: request) { (data, response, error) in
             
             if let httpResponse = response as? HTTPURLResponse{
+                guard let data = data else {return}
+                let finalData = try! JSONDecoder().decode(UsedMessage.self, from: data)
                 if httpResponse.statusCode == 200{
-                    //guard let data = data else {return}
-                    //let finalData = try! JSONDecoder().decode(DataMessage.self, from: data)
                     DispatchQueue.main.async {
-                        self.isCoupon = true
+                        if finalData.Used?.contains("BOGO") ?? false {
+                            self.isBOGOcoupon = false
+                        }
+                        if finalData.Used?.contains("Thank You") ?? false {
+                            self.isTHANKScoupon = false
+                        }
+                        if finalData.Used?.contains("BOGO") ?? false && finalData.Used?.contains("Thank You") ?? false {
+                            self.isUsed.toggle()
+                        }
                     }
                     return
                 }
@@ -97,7 +136,8 @@ struct CouponView: View {
                 }
                 if httpResponse.statusCode == 400{
                     DispatchQueue.main.async {
-                        self.isUsed = true
+                        self.message = "No coupon data found"
+                        self.showingAlert = true
                         }
                     return
                 }
@@ -124,6 +164,10 @@ struct CouponView: View {
 
         return UIImage(systemName: "xmark.circle") ?? UIImage()
     }
+}
+
+struct UsedMessage: Codable {
+    let Used: [String]?
 }
 
 struct CouponView_Previews: PreviewProvider {
