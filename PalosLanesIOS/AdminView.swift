@@ -99,8 +99,11 @@ struct AdminView: View {
         switch result {
         case .success(let data):
             print("Success with \(data)")
-            self.account = data
-            BOGOrequest(email: account)
+            let coupData = data.components(separatedBy: "\n")
+            let accountID = coupData[0]
+            let coupType = coupData[1]
+            print(accountID,coupType)
+            couponRequest(Email: accountID, Coupon: coupType)
         case .failure(let error):
             print("Scanning failed \(error)")
        }
@@ -115,17 +118,16 @@ struct AdminView: View {
                     self.account = data
                     self.showingPointsAlert = true
               }
-            print("Made it")
           case .failure(let error):
               print("Scanning failed \(error)")
          }
       }
     
-    func BOGOrequest(email: String) {
+    func couponRequest(Email: String, Coupon: String) {
         
-        guard let url = URL(string: "http://3.15.199.174:5000/OneFreeGame") else {return}
+        guard let url = URL(string: "http://3.15.199.174:5000/RedeemCoupon") else {return}
           
-            let body: [String: String] = ["Email": email]
+        let body: [String: String] = ["Email": Email, "Coupon": Coupon]
               
             let finalbody = try! JSONSerialization.data(withJSONObject: body)
               
@@ -144,7 +146,6 @@ struct AdminView: View {
                       DispatchQueue.main.async {
                         self.message = "SUCCESS!"
                         self.showingAlert = true
-                        print("Success")
                     }
                     return
                   }
