@@ -20,6 +20,7 @@ struct LoyaltyView: View {
     @State var subtractpoints: Bool = false
     @State var message: String = ""
     @State var showingAlert: Bool = false
+    let CenterId: String = "PalosLanes"
     
     var body: some View {
         VStack {
@@ -79,7 +80,7 @@ struct LoyaltyView: View {
                     Text("1 GAME REDEEMED = -500 POINTS")
                         .foregroundColor(Color(red: 75/255, green: 2/255, blue:38/255))
                 }
-                Image(uiImage: self.generateQRCode(from: "\(self.email)"))
+                Image(uiImage: self.generateQRCode(from: "\(self.email)\n\(self.CenterId)"))
                     .interpolation(.none)
                     .resizable()
                     .scaledToFit()

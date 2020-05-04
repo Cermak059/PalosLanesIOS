@@ -7,7 +7,7 @@
 //
 
 import SwiftUI
-import Foundation
+
 
 struct RegistrationVIew: View {
     @State var firstname: String = ""
@@ -21,6 +21,7 @@ struct RegistrationVIew: View {
     @State var conpass: String = ""
     @State private var showingAlert = false
     @State var message: String = ""
+    let CenterID: String = "PalosLanes"
     
     var validation = Validation()
     
@@ -129,7 +130,7 @@ struct RegistrationVIew: View {
                             self.showingAlert = true
                         }
                         else {
-                            self.RegistrationRequest(username: self.username, password: self.conpass, fname: self.firstname, lname: self.lastname, birthday: self.birthdate, email: self.email, phone: self.phone, league: self.league)
+                            self.RegistrationRequest(username: self.username, password: self.conpass, fname: self.firstname, lname: self.lastname, birthday: self.birthdate, email: self.email, phone: self.phone, league: self.league, centerID: self.CenterID)
                             }
                     }) {
                         Text("SUBMIT")
@@ -147,11 +148,11 @@ struct RegistrationVIew: View {
             }
         }
     
-    func RegistrationRequest(username: String, password: String, fname: String, lname: String, birthday: String, email: String, phone: String, league: Bool) {
+    func RegistrationRequest(username: String, password: String, fname: String, lname: String, birthday: String, email: String, phone: String, league: Bool, centerID: String) {
     
-        guard let url = URL(string: "https://chicagolandbowlingservice.com/api/Register") else {return}
+        guard let url = URL(string: "http://3.15.199.174:5000/Register") else {return}
           
-        let body: [String: Any] = ["Fname": fname, "Lname":lname, "Birthdate": birthday, "Email" : email, "Phone": phone, "League": league, "Username": username, "Password": password]
+        let body: [String: Any] = ["Fname": fname, "Lname":lname, "Birthdate": birthday, "Email" : email, "Phone": phone, "League": league, "Username": username, "Password": password, "CenterID": centerID]
           
           let finalbody = try! JSONSerialization.data(withJSONObject: body)
           

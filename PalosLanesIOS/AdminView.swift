@@ -18,6 +18,7 @@ struct AdminView: View {
     @State private var showModal = false
     @State private var modalSelection = 1
     @State var account: String = ""
+    @State var centerID: String = ""
     
     var body: some View {
             VStack {
@@ -87,10 +88,10 @@ struct AdminView: View {
                 }
 
                 if self.modalSelection == 3 {
-                    AddPickerView(account: self.$account)
+                    AddPickerView(account: self.$account, CenterID: self.$centerID)
                 }
                 if self.modalSelection == 4 {
-                    SubtractPickerView(account: self.$account)
+                    SubtractPickerView(account: self.$account, CenterID: self.$centerID)
                 }
             })
     }
@@ -98,12 +99,11 @@ struct AdminView: View {
         self.showModal = false
         switch result {
         case .success(let data):
-            print("Success with \(data)")
             let coupData = data.components(separatedBy: "\n")
             let accountID = coupData[0]
             let coupType = coupData[1]
-            print(accountID,coupType)
-            couponRequest(Email: accountID, Coupon: coupType)
+            self.centerID = coupData[2]
+            couponRequest(Email: accountID, Coupon: coupType, CenterID: centerID)
         case .failure(let error):
             print("Scanning failed \(error)")
        }
@@ -114,8 +114,10 @@ struct AdminView: View {
           switch result {
           case .success(let data):
               print("Success with \(data)")
+              let coupData = data.components(separatedBy: "\n")
+              self.account = coupData[0]
+              self.centerID = coupData[1]
               DispatchQueue.main.async { // !! This part important !!
-                    self.account = data
                     self.showingPointsAlert = true
               }
           case .failure(let error):
@@ -123,11 +125,11 @@ struct AdminView: View {
          }
       }
     
-    func couponRequest(Email: String, Coupon: String) {
+    func couponRequest(Email: String, Coupon: String, CenterID: String) {
         
         guard let url = URL(string: "http://3.15.199.174:5000/RedeemCoupon") else {return}
           
-        let body: [String: String] = ["Email": Email, "Coupon": Coupon]
+        let body: [String: String] = ["Email": Email, "Coupon": Coupon, "CenterID": CenterID]
               
             let finalbody = try! JSONSerialization.data(withJSONObject: body)
               
@@ -181,6 +183,7 @@ struct AddPickerView: View {
     @State var showingAlert: Bool = false
     @State var message: String = ""
     @Binding var account: String
+    @Binding var CenterID: String
     @State var AuthToken: String = (UserDefaults.standard.string(forKey: "AuthToken") ?? nil) ?? ""
     
     @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
@@ -200,7 +203,7 @@ struct AddPickerView: View {
                         }
                         Button(action: {
                             let points = self.selectedPoints * 100
-                            self.PointsRequest(points: points, email: self.account)
+                            self.PointsRequest(points: points, email: self.account, CenterID: self.CenterID)
                         }) {
                             Text("Confirm")
                         }.frame(minWidth: 0, maxWidth: .infinity, maxHeight: 40)
@@ -222,11 +225,11 @@ struct AddPickerView: View {
         }
     }
     
-    func PointsRequest(points: Int, email: String) {
+    func PointsRequest(points: Int, email: String, CenterID: String) {
         
         guard let url = URL(string: "https://chicagolandbowlingservice.com/api/Points") else {return}
           
-        let body: [String: Any] = ["Points": points, "Email": email]
+        let body: [String: Any] = ["Points": points, "Email": email, "CenterID": CenterID]
               
             let finalbody = try! JSONSerialization.data(withJSONObject: body)
               
@@ -279,6 +282,7 @@ struct AddPickerView: View {
 struct SubtractPickerView: View {
     
     @Binding var account: String
+    @Binding var CenterID: String
     @State var showingAlert: Bool = false
     @State var message: String = ""
     @State var AuthToken: String = (UserDefaults.standard.string(forKey: "AuthToken") ?? nil) ?? ""
@@ -300,7 +304,7 @@ struct SubtractPickerView: View {
                     }
                     Button(action: {
                         let points = self.selectedPoints * -500
-                        self.PointsRequest(points: points, email: self.account)
+                        self.PointsRequest(points: points, email: self.account, CenterID: self.CenterID)
                     }) {
                         Text("Confirm")
                     }.frame(minWidth: 0, maxWidth: .infinity, maxHeight: 40)
@@ -323,11 +327,11 @@ struct SubtractPickerView: View {
         }
     }
     
-    func PointsRequest(points: Int, email: String) {
+    func PointsRequest(points: Int, email: String, CenterID: String) {
         
         guard let url = URL(string: "https://chicagolandbowlingservice.com/api/Points") else {return}
           
-        let body: [String: Any] = ["Points": points, "Email": email]
+        let body: [String: Any] = ["Points": points, "Email": email, "CenterID": CenterID]
               
             let finalbody = try! JSONSerialization.data(withJSONObject: body)
               

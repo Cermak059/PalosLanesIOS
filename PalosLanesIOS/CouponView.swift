@@ -25,6 +25,7 @@ struct CouponView: View {
     @State var THANKSshowQR: Bool = false
     @State var modalSelection = 1
     @State var showModal: Bool = false
+    let CenterID: String  = "PalosLanes"
     
     var body: some View {
         VStack {
@@ -77,7 +78,7 @@ struct CouponView: View {
             if self.modalSelection == 1 {
                 VStack {
                     Text("Please scan this BOGO QR code")
-                    Image(uiImage: self.generateQRCode(from: "\(self.email)\n\("BOGO")"))
+                    Image(uiImage: self.generateQRCode(from: "\(self.email)\n\("BOGO")\n\(self.CenterID)"))
                     .interpolation(.none)
                     .resizable()
                     .scaledToFit()
@@ -87,7 +88,7 @@ struct CouponView: View {
             if self.modalSelection == 2 {
                 VStack {
                    Text("Please scan this one time QR code")
-                   Image(uiImage: self.generateQRCode(from: "\(self.email)\n\("Thank You")"))
+                   Image(uiImage: self.generateQRCode(from: "\(self.email)\n\("Thank You")\n\(self.CenterID)"))
                    .interpolation(.none)
                    .resizable()
                    .scaledToFit()
