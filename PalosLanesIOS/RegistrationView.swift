@@ -72,10 +72,10 @@ struct RegistrationVIew: View {
                             TextField("Enter desired username", text:$username)
                                     .textFieldStyle(RoundedBorderTextFieldStyle())
                                     .padding(.trailing)
-                            TextField("Enter password", text:$password)
+                            SecureField("Enter password", text:$password)
                                     .textFieldStyle(RoundedBorderTextFieldStyle())
                                     .padding(.trailing)
-                            TextField("Re-type password", text:$conpass)
+                            SecureField("Re-type password", text:$conpass)
                                     .textFieldStyle(RoundedBorderTextFieldStyle())
                                 .padding([.trailing, .bottom])
                         }

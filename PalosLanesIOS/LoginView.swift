@@ -45,7 +45,7 @@ struct ContentView: View {
                 TextField("Enter username", text:$username)
                     .textFieldStyle(RoundedBorderTextFieldStyle())
                     .padding([.horizontal,.top])
-                TextField("Enter password",text: $password)
+                SecureField("Enter password",text: $password)
                     .textFieldStyle(RoundedBorderTextFieldStyle())
                     .padding([.horizontal, .bottom])
             
@@ -69,7 +69,7 @@ struct ContentView: View {
                                 }
                             }
                         }) {
-                            Text("Login").foregroundColor(Color(red: 75/255, green: 2/255, blue:38/255))
+                            Text("Login")
                             .frame(minWidth: 0, maxWidth: .infinity, maxHeight: 40)
                             .background(Color(red: 200/255, green: 200/255, blue: 200/255, opacity: 1.0))
                             .cornerRadius(8)
@@ -89,7 +89,6 @@ struct ContentView: View {
             
                 NavigationLink(destination: ForgotPassView()) {
                     Text("FORGOT PASSWORD?")
-                        .foregroundColor(Color(red: 75/255, green: 2/255, blue:38/255))
                     }.padding()
 
                 Spacer()
@@ -97,7 +96,6 @@ struct ContentView: View {
                 Text("Don't have an account with us?")
                 NavigationLink(destination: RegistrationVIew()) {
                     Text("REGISTER HERE").fontWeight(.semibold)
-                        .foregroundColor(Color(red: 75/255, green: 2/255, blue:38/255))
                     }.frame(minWidth: 0, maxWidth: .infinity, maxHeight: 40)
                      .background(Color(red: 200/255, green: 211/255, blue: 211/255, opacity: 1.0))
                      .cornerRadius(8)

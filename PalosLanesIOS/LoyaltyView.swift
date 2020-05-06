@@ -93,6 +93,10 @@ struct LoyaltyView: View {
                     self.GetUserData(AuthToken: self.AuthToken)
                 }) {
                     Text("Update")
+                    .frame(minWidth: 0, maxWidth: .infinity, maxHeight: 40)
+                    .background(Color(red: 200/255, green: 211/255, blue: 211/255, opacity: 1.0))
+                    .cornerRadius(10)
+                    .padding()
                 }
             }
         }.background(Image("approach")

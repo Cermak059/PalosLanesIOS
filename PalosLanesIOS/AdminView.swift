@@ -39,7 +39,6 @@ struct AdminView: View {
                 }) {
                     Text("Scan Points")
                     .fontWeight(.semibold)
-                    .foregroundColor(Color(red: 75/255, green: 2/255, blue:38/255))
                     .frame(minWidth: 0, maxWidth:
                     .infinity, maxHeight: 40)
                     .background(Color(red: 200/255, green: 211/255, blue: 211/255, opacity: 1.0))
@@ -54,7 +53,6 @@ struct AdminView: View {
                 }) {
                     Text("Scan Coupons")
                     .fontWeight(.semibold)
-                    .foregroundColor(Color(red: 75/255, green: 2/255, blue:38/255))
                     .frame(minWidth: 0, maxWidth:
                     .infinity, maxHeight: 40)
                     .background(Color(red: 200/255, green: 211/255, blue: 211/255, opacity: 1.0))
@@ -74,6 +72,12 @@ struct AdminView: View {
                     ])
                 }
                 Spacer()
+                NavigationLink(destination: CreateCouponView()){
+                    Text("Create New Coupon").foregroundColor(.blue)
+                }.frame(minWidth: 0, maxWidth:  .infinity, maxHeight: 40)
+                .background(Color(red: 200/255, green: 211/255, blue: 211/255, opacity: 1.0))
+                .cornerRadius(10)
+                .padding()
             }.background(Image("approach")
             .resizable()
             .clipped()
@@ -227,7 +231,7 @@ struct AddPickerView: View {
     
     func PointsRequest(points: Int, email: String, CenterID: String) {
         
-        guard let url = URL(string: "https://chicagolandbowlingservice.com/api/Points") else {return}
+        guard let url = URL(string: "http://3.15.199.174:5000/Points") else {return}
           
         let body: [String: Any] = ["Points": points, "Email": email, "CenterID": CenterID]
               
@@ -329,7 +333,7 @@ struct SubtractPickerView: View {
     
     func PointsRequest(points: Int, email: String, CenterID: String) {
         
-        guard let url = URL(string: "https://chicagolandbowlingservice.com/api/Points") else {return}
+        guard let url = URL(string: "http://3.15.199.174:5000/Points") else {return}
           
         let body: [String: Any] = ["Points": points, "Email": email, "CenterID": CenterID]
               
