@@ -76,7 +76,6 @@ struct ContentView: View {
                             .padding([.trailing])
                         }.frame(minWidth: 0, maxWidth: .infinity)
                     }
-            
                 ZStack {
                     NavigationLink(destination: HomeView(), isActive: $user) {
                         Text("")
