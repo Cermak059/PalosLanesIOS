@@ -9,7 +9,8 @@
 import SwiftUI
 
 struct CreateCouponView: View {
-    @State var couponName: String = ""
+    @State var couponName: String = "Limited Time Only"
+    @State var Hours: Int = 24
     var body: some View {
         VStack {
            Image("logoheader")
@@ -18,16 +19,24 @@ struct CreateCouponView: View {
             VStack(alignment: .leading){
                 Text("Coupon Name:")
                     .padding([.horizontal,.top])
-                TextField("Limited Time Only", text:$couponName)
-                    .disabled(true)
-                    .textFieldStyle(RoundedBorderTextFieldStyle())
-                    .frame(width: 200)
-                    .padding(.horizontal)
+                HStack{
+                    TextField("", text:$couponName)
+                        .disabled(true)
+                        .textFieldStyle(RoundedBorderTextFieldStyle())
+                        .frame(width: 200)
+                        .padding(.leading)
+                    Text("(Only available option)")
+                    }
                 Text("Expires In (Hours):")
-                    .padding([.horizontal, .top])
-                DropDown()
+                    .padding([.bottom, .horizontal])
+                VStack(alignment: .leading) {
+                    Text("Your coupon will look like this:").padding(.top).padding(.top).padding(.top)
+                    Image("Limited_Time_Only").resizable()
+                        .frame(minWidth: 0, maxWidth: 300, minHeight: 0, maxHeight: 300)
+                        .scaledToFit()
+                }.padding(.horizontal).overlay(DropDown(couponName: $couponName, Hours: $Hours).padding(.horizontal), alignment: .topLeading)
                 Spacer()
-                CreateButton()
+                CreateButton(Hours: $Hours, couponName: $couponName)
             }.frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity, alignment: .topLeading)
         }.background(Image("approach")
         .resizable()
@@ -38,10 +47,10 @@ struct CreateCouponView: View {
 struct DropDown: View {
 @State var expand: Bool = false
 @State var dropDown: String = "24 Hours"
-@State var Hours: Int = 24
+@Binding var couponName: String
+@Binding var Hours: Int
 var body: some View {
-    VStack(alignment: .leading) {
-        VStack(spacing: 30) {
+        VStack {
             HStack {
                 Text(dropDown)
                     .foregroundColor(.black)
@@ -102,29 +111,35 @@ var body: some View {
             .background(Color(.white))
             .cornerRadius(7)
             .shadow(color: .gray, radius: 6)
-        }.padding(.horizontal)
+        }
     }
-}
 struct CreateButton: View {
     @State var AuthToken: String = (UserDefaults.standard.string(forKey: "AuthToken") ?? nil) ?? ""
+    @State var message: String = ""
+    @State var showingAlert: Bool = false
+    @Binding var Hours: Int
+    @Binding var couponName: String
+    let CenterID: String = "PalosLanes"
     var body: some View {
         VStack {
             Button(action: {
-                self.CreateCoupon(CenterID: <#T##String#>, Hours: <#T##Int#>, CouponName: <#T##String#>)
+                self.CreateCoupon(CenterID: self.CenterID, Hours: self.Hours, couponName: self.couponName)
                 }) {
-                    Text("Create")
+                    Text("Create Coupon").bold()
                 }
                .frame(minWidth: 0, maxWidth:  .infinity, maxHeight: 40)
                .background(Color(red: 200/255, green: 211/255, blue: 211/255, opacity: 1.0))
                .cornerRadius(10)
                .padding()
+        }.alert(isPresented: $showingAlert) {
+            Alert(title: Text("Alert"), message: Text((message)), dismissButton: .default(Text("OK")))
         }
     }
-    func CreateCoupon(CenterID: String, Hours: Int, CouponName: String) {
+    func CreateCoupon(CenterID: String, Hours: Int, couponName: String) {
             
            guard let url = URL(string: "http://3.15.199.174:5000/CreateCoupon") else {return}
               
-           let body: [String:Any] = ["CenterID": CenterID, "Hours": Hours, "CouponName": CouponName]
+           let body: [String:Any] = ["CenterID": CenterID, "Expires": Hours, "Coupon": couponName]
                   
                let finalbody = try! JSONSerialization.data(withJSONObject: body)
                   
@@ -141,7 +156,7 @@ struct CreateButton: View {
                         //guard let data = data else {return}
                         //let finalData = try! JSONDecoder().decode(ServerMessage.self, from: data)
                            DispatchQueue.main.async {
-                               self.message = "SUCCESS!"
+                               self.message = "COUPON CREATED!"
                                self.showingAlert = true
                            }
                            return
