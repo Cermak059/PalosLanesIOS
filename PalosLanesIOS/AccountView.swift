@@ -19,15 +19,11 @@ struct AccountView: View {
     @State var boolasString: String = ""
     var body: some View {
         VStack {
-            Text("").navigationBarTitle("ACCOUNT")
+            Text("").navigationBarTitle("ACCOUNT", displayMode: .inline)
             ScrollView {
-                Image("logoheader")
+                Image("maskinunit")
                         .resizable()
                         .scaledToFit()
-                Divider()
-                    .frame(height: 5)
-                    .background(Color(red: 75/255, green: 2/255, blue:38/255))
-                    .padding(.horizontal)
                 Text("Available Points: \(points)")
                     .font(.headline)
                     .fontWeight(.semibold)
@@ -64,10 +60,11 @@ struct AccountView: View {
                         .padding(.trailing)
                 }
                 Divider()
-                .frame(height: 5)
-                .background(Color(red: 75/255, green: 2/255, blue:38/255))
-                .padding(.horizontal)
+                    .frame(height: 5)
+                    .background(Color(red: 75/255, green: 2/255, blue:38/255))
+                    .padding(.horizontal)
                 Spacer()
+                
             }
         }.background(Image("approach")
         .resizable()

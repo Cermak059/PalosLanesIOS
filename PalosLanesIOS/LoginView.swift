@@ -9,46 +9,64 @@
 import SwiftUI
 import Combine
 
-
+class UserSettings: ObservableObject {
+    @Published var user: Bool = false
+    @Published var admin: Bool = false
+}
 
 struct ContentView: View {
+    @EnvironmentObject var settings: UserSettings
     @State var username: String = UserDefaults.standard.string(forKey: "SaveUsername") ?? ""
     @State var password: String = UserDefaults.standard.string(forKey: "SavePassword") ?? ""
     @State var remember: Bool = true
-    @State var user: Bool = false
-    @State var admin: Bool = false
     @State private var showingAlert = false
     @State var message: String = ""
     
-    
     init() {
-        UINavigationBar.appearance().largeTitleTextAttributes = [.font : UIFont(name: "Georgia-Bold", size: 20)!]
+        UINavigationBar.appearance().setBackgroundImage(UIImage(), for: UIBarMetrics.default)
+        UINavigationBar.appearance().largeTitleTextAttributes = [.font: UIFont(name: "Georgia-Bold", size: 30)!]
+        /*UINavigationBar.appearance().shadowImage = UIImage()
+        UINavigationBar.appearance().backgroundColor = (UIColor(red: 200/255, green: 211/255, blue: 211/255, alpha:0.8))*/
     }
     
     var body: some View {
         NavigationView {
-           VStack {
+            VStack {
                 Text("")
                     .navigationBarTitle("LOGIN")
-                    .navigationBarItems(trailing:
-                        Button(action: {
-                            let formattedString = "https://chicagolandbowlingservice.com/privacy-policy"
-                            let url = URL(string: formattedString)!
-                            UIApplication.shared.open(url)
-                        }){
-                            Text("Privacy Policy")
-                    })
-            
+                .navigationBarItems(trailing:
+                    Button(action: {
+                        let formattedString = "https://chicagolandbowlingservice.com/privacy-policy"
+                        let url = URL(string: formattedString)!
+                        UIApplication.shared.open(url)
+                    }){
+                        Text("Privacy Policy")
+                })
                 Image("logoheader")
                     .resizable()
                     .scaledToFit()
-                TextField("Enter username", text:$username)
-                    .textFieldStyle(RoundedBorderTextFieldStyle())
-                    .padding([.horizontal,.top])
-                SecureField("Enter password",text: $password)
-                    .textFieldStyle(RoundedBorderTextFieldStyle())
-                    .padding([.horizontal, .bottom])
-            
+                VStack {
+                    HStack {
+                        Image(systemName: "person")
+                            .foregroundColor(.secondary)
+                            .frame(width: 10)
+                            .padding()
+                        TextField("Username", text:$username)
+                        }
+                    }.background(Color(.white))
+                    .cornerRadius(10)
+                    .padding([.top,.horizontal])
+                VStack {
+                    HStack {
+                        Image(systemName: "lock")
+                            .foregroundColor(.secondary)
+                            .frame(width: 10)
+                            .padding()
+                        SecureField("Password",text: $password)
+                        }
+                    }.background(Color(.white))
+                    .cornerRadius(10)
+                    .padding([.horizontal,.bottom])
                 HStack {
                     Toggle(isOn: $remember) {
                         Text("Remember Me").fontWeight(.thin)
@@ -69,37 +87,34 @@ struct ContentView: View {
                                 }
                             }
                         }) {
-                            Text("Login")
-                            .frame(minWidth: 0, maxWidth: .infinity, maxHeight: 40)
-                            .background(Color(red: 200/255, green: 200/255, blue: 200/255, opacity: 1.0))
-                            .cornerRadius(8)
-                            .padding([.trailing])
-                        }.frame(minWidth: 0, maxWidth: .infinity)
-                    }
+                            Text("Login").fontWeight(.semibold)
+                                .frame(minWidth: 0, maxWidth: .infinity, maxHeight: 40)
+                                .background(Color(red: 200/255, green: 211/255, blue: 211/255, opacity: 1.0))
+                                .cornerRadius(10)
+                                .padding([.trailing])
+                            }.frame(minWidth: 0, maxWidth: .infinity)
+                        }
                 ZStack {
-                    NavigationLink(destination: HomeView(), isActive: $user) {
+                    NavigationLink(destination: HomeView(), isActive: $settings.user) {
                         Text("")
                         }.hidden()
-                
-                    NavigationLink(destination: AdminView(), isActive: $admin) {
+                    NavigationLink(destination: AdminView(), isActive: $settings.admin) {
                         Text("")
                         }.hidden()
                 }.hidden()
             
                 NavigationLink(destination: ForgotPassView()) {
                     Text("FORGOT PASSWORD?")
-                    }.padding()
-
+                }.padding()
                 Spacer()
-            
                 Text("Don't have an account with us?")
+                    .padding(.bottom,5)
                 NavigationLink(destination: RegistrationVIew()) {
                     Text("REGISTER HERE").fontWeight(.semibold)
                     }.frame(minWidth: 0, maxWidth: .infinity, maxHeight: 40)
                      .background(Color(red: 200/255, green: 211/255, blue: 211/255, opacity: 1.0))
                      .cornerRadius(8)
                      .padding([.horizontal, .bottom])
-            
             }.background(Image("approach")
                 .resizable()
                 .clipped()
@@ -107,9 +122,9 @@ struct ContentView: View {
                 .alert(isPresented: $showingAlert) {
                     Alert(title: Text("Login Failed"), message: Text((message)), dismissButton: .default(Text("OK")))
                 }
-        }.onAppear {
+            }.onAppear {
             self.CheckToken()
-        }
+            }
     }
     
     
@@ -142,7 +157,7 @@ func LoginRequest(username: String, password: String) {
                             self.GetUserData(AuthToken: AuthToken)
                         }
                         else if finalData.AccessLevel == "Admin" {
-                            self.admin.toggle()
+                            self.settings.admin.toggle()
                         }
                     }
                     return
@@ -184,7 +199,7 @@ func VerifyToken(AuthToken: String) {
                             self.GetUserData(AuthToken: AuthToken)
                         }
                         else if UserDefaults.standard.string(forKey: "AccessLevel") == "Admin" {
-                            self.admin.toggle()
+                            self.settings.admin.toggle()
                         }
                         else {
                             self.message = "Oops something went wrong... Please login again"
@@ -237,7 +252,7 @@ func VerifyToken(AuthToken: String) {
                     UserDefaults.standard.set(finalData.Type, forKey: "SaveType")
                     UserDefaults.standard.set(finalData.League, forKey: "SaveLeague")
                     DispatchQueue.main.async {
-                        self.user.toggle()
+                        self.settings.user.toggle()
                     }
                     return
                 }

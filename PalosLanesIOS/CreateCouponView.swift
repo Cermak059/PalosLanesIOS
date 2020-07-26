@@ -26,7 +26,7 @@ struct CreateCouponView: View {
                         .frame(width: 200)
                         .padding(.leading)
                     Text("(Only available option)")
-                    }
+                }
                 Text("Expires In (Hours):")
                     .padding([.bottom, .horizontal])
                 VStack(alignment: .leading) {

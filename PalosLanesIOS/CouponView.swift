@@ -20,6 +20,7 @@ struct CouponView: View {
     @State var email: String = UserDefaults.standard.string(forKey: "SaveEmail") ?? ""
     @State var isBOGOcoupon: Bool = true
     @State var isTHANKScoupon:Bool = true
+    @State var isLimitedTime:Bool = true
     @State var isUsed: Bool = false
     @State var BOGOshowQR: Bool = false
     @State var THANKSshowQR: Bool = false
@@ -28,45 +29,66 @@ struct CouponView: View {
     let CenterID: String  = "PalosLanes"
     
     var body: some View {
-        VStack {
-            Text("").navigationBarTitle("COUPONS")
+        VStack{
+            Text("").navigationBarTitle("COUPONS", displayMode: .inline)
                     .navigationBarItems(trailing:
                     NavigationLink(destination: AccountView()){
                     Text("My Account")})
             ScrollView {
-                Image("logoheader")
+                Image("maskinunit")
                         .resizable()
                         .scaledToFit()
                 Divider()
                     .frame(height: 5)
                     .background(Color(red: 75/255, green: 2/255, blue:38/255))
                     .padding(.horizontal)
-                if isBOGOcoupon {
-                    Button(action: {
-                        self.modalSelection = 1
-                        self.showModal = true
-                    }) {
-                        Image("bogoimagecopy")
-                        .renderingMode(.original)
-                        .padding()
+                VStack(alignment: .leading){
+                    if isBOGOcoupon {
+                        Button(action: {
+                            self.modalSelection = 1
+                            self.showModal = true
+                        }) {
+                            Image("bogoimagecopy")
+                                .resizable()
+                                .renderingMode(.original)
+                                .frame(maxWidth: 100, maxHeight: 100)
+                            Text("Bowl One Get One Free")
+                                .foregroundColor(.black)
+                        }.padding([.top, .bottom])
                     }
-                }
-                if isTHANKScoupon {
-                    Button(action: {
-                        self.modalSelection = 2
-                        self.showModal = true
-                   }) {
-                       Image("Cermak_ThankYouCoupon")
-                       .renderingMode(.original)
-                       .padding()
+                    if isTHANKScoupon {
+                        Button(action: {
+                            self.modalSelection = 2
+                            self.showModal = true
+                       }) {
+                            Image("Cermak_ThankYouCoupon")
+                                .resizable()
+                                .renderingMode(.original)
+                                .frame(maxWidth: 100, maxHeight: 100)
+                            Text("One Free Game")
+                                .foregroundColor(.black)
+                        }.padding(.bottom)
                    }
-               }
-                if isUsed {
-                    Text("Oops Sorry! You have already used your coupon for this week!")
-                        .padding(.horizontal)
-                        .multilineTextAlignment(.center)
-                        .foregroundColor(Color(red: 75/255, green: 2/255, blue:38/255))
-                    Image("errorsymbol")
+                    if isLimitedTime {
+                        Button(action: {
+                            self.modalSelection = 3
+                            self.showModal = true
+                        }) {
+                            Image("Limited_Time_Only")
+                                .resizable()
+                                .renderingMode(.original)
+                                .frame(maxWidth: 100, maxHeight: 100)
+                            Text("Limited Time Offer")
+                                .foregroundColor(.black)
+                        }.padding(.bottom)
+                    }
+                    if isUsed {
+                        Text("Oops Sorry! You have already used your coupon for this week!")
+                            .padding(.horizontal)
+                            .multilineTextAlignment(.center)
+                            .foregroundColor(Color(red: 75/255, green: 2/255, blue:38/255))
+                        Image("errorsymbol")
+                    }
                 }
                 Spacer()
             }
@@ -89,6 +111,16 @@ struct CouponView: View {
                 VStack {
                    Text("Please scan this one time QR code")
                    Image(uiImage: self.generateQRCode(from: "\(self.email)\n\("Thank You")\n\(self.CenterID)"))
+                   .interpolation(.none)
+                   .resizable()
+                   .scaledToFit()
+                   .frame(width: 200, height: 200)
+               }
+            }
+            if self.modalSelection == 3 {
+                VStack {
+                   Text("Please scan this one time QR code")
+                   Image(uiImage: self.generateQRCode(from: "\(self.email)\n\("Limited Time Only")\n\(self.CenterID)"))
                    .interpolation(.none)
                    .resizable()
                    .scaledToFit()
@@ -124,6 +156,9 @@ struct CouponView: View {
                         }
                         if finalData.Used?.contains("BOGO") ?? false && finalData.Used?.contains("Thank You") ?? false {
                             self.isUsed.toggle()
+                        }
+                        if finalData.CloudCoupon?.contains("Limited Time Only") ?? false {
+                            self.isTHANKScoupon = false
                         }
                     }
                     return
@@ -169,6 +204,7 @@ struct CouponView: View {
 
 struct UsedMessage: Codable {
     let Used: [String]?
+    let CloudCoupon: String?
 }
 
 struct CouponView_Previews: PreviewProvider {
