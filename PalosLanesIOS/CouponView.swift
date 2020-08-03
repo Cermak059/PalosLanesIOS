@@ -10,7 +10,7 @@ import SwiftUI
 import CoreImage.CIFilterBuiltins
 
 struct CouponView: View {
-    
+    @EnvironmentObject var settings: UserSettings
     let context = CIContext()
     let filter = CIFilter.qrCodeGenerator()
     
@@ -38,10 +38,6 @@ struct CouponView: View {
                 Image("maskinunit")
                         .resizable()
                         .scaledToFit()
-                Divider()
-                    .frame(height: 5)
-                    .background(Color(red: 75/255, green: 2/255, blue:38/255))
-                    .padding(.horizontal)
                 VStack(alignment: .leading){
                     if isBOGOcoupon {
                         Button(action: {
@@ -148,17 +144,18 @@ struct CouponView: View {
                 let finalData = try! JSONDecoder().decode(UsedMessage.self, from: data)
                 if httpResponse.statusCode == 200{
                     DispatchQueue.main.async {
+                        print(finalData)
                         if finalData.Used?.contains("BOGO") ?? false {
                             self.isBOGOcoupon = false
                         }
                         if finalData.Used?.contains("Thank You") ?? false {
                             self.isTHANKScoupon = false
                         }
-                        if finalData.Used?.contains("BOGO") ?? false && finalData.Used?.contains("Thank You") ?? false {
-                            self.isUsed.toggle()
+                        if finalData.CloudCoupon == false || finalData.Used?.contains("Limited Time Only") ?? false {
+                            self.isLimitedTime = false
                         }
-                        if finalData.CloudCoupon?.contains("Limited Time Only") ?? false {
-                            self.isTHANKScoupon = false
+                        if self.isBOGOcoupon == false && self.isTHANKScoupon == false && self.isLimitedTime == false {
+                            self.isUsed.toggle()
                         }
                     }
                     return
@@ -204,7 +201,7 @@ struct CouponView: View {
 
 struct UsedMessage: Codable {
     let Used: [String]?
-    let CloudCoupon: String?
+    let CloudCoupon: Bool
 }
 
 struct CouponView_Previews: PreviewProvider {

@@ -13,9 +13,10 @@ struct CreateCouponView: View {
     @State var Hours: Int = 24
     var body: some View {
         VStack {
-           Image("logoheader")
-           .resizable()
-           .scaledToFit()
+            Text("").navigationBarTitle("Create Coupon", displayMode: .inline)
+            Image("logoheader")
+                .resizable()
+                .scaledToFit()
             VStack(alignment: .leading){
                 Text("Coupon Name:")
                     .padding([.horizontal,.top])

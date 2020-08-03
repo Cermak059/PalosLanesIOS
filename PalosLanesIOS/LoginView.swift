@@ -9,10 +9,6 @@
 import SwiftUI
 import Combine
 
-class UserSettings: ObservableObject {
-    @Published var user: Bool = false
-    @Published var admin: Bool = false
-}
 
 struct ContentView: View {
     @EnvironmentObject var settings: UserSettings
@@ -28,7 +24,6 @@ struct ContentView: View {
         /*UINavigationBar.appearance().shadowImage = UIImage()
         UINavigationBar.appearance().backgroundColor = (UIColor(red: 200/255, green: 211/255, blue: 211/255, alpha:0.8))*/
     }
-    
     var body: some View {
         NavigationView {
             VStack {
@@ -157,7 +152,7 @@ func LoginRequest(username: String, password: String) {
                             self.GetUserData(AuthToken: AuthToken)
                         }
                         else if finalData.AccessLevel == "Admin" {
-                            self.settings.admin.toggle()
+                            self.settings.adminlogin()
                         }
                     }
                     return
@@ -199,7 +194,7 @@ func VerifyToken(AuthToken: String) {
                             self.GetUserData(AuthToken: AuthToken)
                         }
                         else if UserDefaults.standard.string(forKey: "AccessLevel") == "Admin" {
-                            self.settings.admin.toggle()
+                            self.settings.adminlogin()
                         }
                         else {
                             self.message = "Oops something went wrong... Please login again"
@@ -252,7 +247,7 @@ func VerifyToken(AuthToken: String) {
                     UserDefaults.standard.set(finalData.Type, forKey: "SaveType")
                     UserDefaults.standard.set(finalData.League, forKey: "SaveLeague")
                     DispatchQueue.main.async {
-                        self.settings.user.toggle()
+                        self.settings.userlogin()
                     }
                     return
                 }

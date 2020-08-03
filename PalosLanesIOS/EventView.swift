@@ -30,10 +30,11 @@ struct EventView: View {
                             .background(Color(red: 75/255, green: 2/255, blue:38/255))
                             .padding(.horizontal)
                         Text("Call us at 708-974-3200 for availability")
-                            .foregroundColor(Color(red: 75/255, green: 2/255, blue:38/255))
+                            .foregroundColor(Color(.white))
                         }
                     }
-                }.edgesIgnoringSafeArea(.all)
+                }.background(Color(red: 75/255, green: 2/255, blue:38/255))
+                .edgesIgnoringSafeArea(.all)
     }
 }
 

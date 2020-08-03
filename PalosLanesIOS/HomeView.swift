@@ -7,36 +7,10 @@
 //
 
 import SwiftUI
-
-/*struct MainView: View {
-    @State var showMenu: Bool = false
-    var body: some View {
-        let drag = DragGesture()
-            .onEnded {
-                if $0.translation.width < -100 {
-                    withAnimation {
-                        self.showMenu = false
-                    }
-                }
-            }
-        return GeometryReader { geometry in
-            ZStack(alignment: .leading) {
-                HomeView(showMenu: self.$showMenu)
-                    .frame(width: geometry.size.width, height: geometry.size.height)
-                    .offset(x: self.showMenu ? geometry.size.width/2 : 0)
-                    .disabled(self.showMenu ? true : false)
-                if self.showMenu {
-                    MenuView(showMenu: self.$showMenu)
-                        .frame(width: geometry.size.width/2)
-                        .transition(.move(edge: .leading))
-                }
-            }.gesture(drag)
-        }
-    }
-}*/
-
+import Combine
 
 struct HomeView: View {
+    @EnvironmentObject var settings: UserSettings
     @State var firstname: String = UserDefaults.standard.string(forKey: "SaveFirst") ?? ""
     @State var showAccount: Bool = false
     @State var showPackages: Bool = false
@@ -46,29 +20,6 @@ struct HomeView: View {
                     .navigationBarItems(trailing:
             NavigationLink(destination: AccountView()){
                     Text("My Account")})
-                //if self.showMenu {
-                        //.navigationBarHidden(true)
-                        //.navigationBarBackButtonHidden(true)
-                    /*.navigationBarItems(leading:
-                        Button(action: {
-                            withAnimation {
-                                self.showMenu.toggle()
-                            }
-                        }, label:  {Image(systemName: "sidebar.left")}),trailing: Button(action: {
-                                self.showAccount = true
-                            }, label: {Image(systemName: "person")})
-                        )*/
-                /*else {
-                    Text("").navigationBarTitle("HOME")
-                    .navigationBarBackButtonHidden(true)
-                    .navigationBarItems(leading:
-                        Button(action: {
-                            self.showMenu.toggle()
-                        }, label:  {Image(systemName: "sidebar.left")}),trailing: Button(action: {
-                                self.showAccount = true
-                            }, label: {Image(systemName: "person")})
-                        )
-                }*/
                 ScrollView() {
                     Image("logoheader")
                             .resizable()
@@ -81,7 +32,7 @@ struct HomeView: View {
                         .frame(height: 2)
                         .background(Color(red: 75/255, green: 2/255, blue:38/255))
                         .padding(.horizontal)
-                    bowlRedeem()
+                    bowlRedeem().environmentObject(settings)
                     Leagues()
                     Specials(showPackages: $showPackages)
                 }
@@ -94,6 +45,7 @@ struct HomeView: View {
 }
 
 struct bowlRedeem: View {
+    @EnvironmentObject var settings: UserSettings
     var body: some View {
         VStack {
             HStack {
@@ -148,7 +100,12 @@ struct Specials: View {
                             .resizable()
                                 .cornerRadius(30)
                                 .frame(width: UIScreen.main.bounds.width - 50, height: 250)
-                        }
+                        }.overlay(HStack {
+                            Text("Tap For Offers")
+                                .foregroundColor(Color(.blue))
+                            Image(systemName: "arrow.right")
+                                .foregroundColor(Color(.blue))
+                        }.background(Color(.yellow).cornerRadius(5)), alignment: .bottomTrailing)
                            Image("beattheclockweb")
                                 .resizable()
                                 .cornerRadius(30)

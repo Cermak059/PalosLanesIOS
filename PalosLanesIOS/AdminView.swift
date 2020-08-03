@@ -23,9 +23,6 @@ struct AdminView: View {
     var body: some View {
             VStack {
                 Text("").navigationBarTitle("ADMIN")
-                        .navigationBarItems(trailing:
-                        NavigationLink(destination: AccountView()){
-                        Text("My Account")})
                 Image("logoheader")
                         .resizable()
                         .scaledToFit()

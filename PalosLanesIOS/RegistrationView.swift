@@ -26,127 +26,129 @@ struct RegistrationVIew: View {
     var validation = Validation()
     
     var body: some View {
-        ScrollView {
-                VStack {
-                    Image("logoheader")
-                        .resizable()
-                        .scaledToFit()
-                       Spacer()
-                    HStack {
-                        VStack(alignment: .leading){
-                            Text("First Name:").padding(.top, 22)
-                            Text("Last Name:").padding(.top, 22)
-                            Text("Birthdate:").padding(.top, 24)
-                            Text("Email:").padding(.top, 24)
-                            Text("Phone:").padding(.top, 24)
-                            Spacer()
-                        }.padding(.leading, 10)
-                        VStack {
-                            TextField("Enter first name", text:$firstname)
-                                .textFieldStyle(RoundedBorderTextFieldStyle())
-                                .padding([.trailing,.top])
-                            TextField("Enter last name", text:$lastname)
-                                .textFieldStyle(RoundedBorderTextFieldStyle())
-                                .padding(.trailing)
-                            TextField("Ex. 03/29/1993", text:$birthdate)
-                                .textFieldStyle(RoundedBorderTextFieldStyle())
-                                .padding(.trailing)
-                            TextField("Ex. bowling123@yahoo.com", text:$email)
-                                .textFieldStyle(RoundedBorderTextFieldStyle())
-                                .padding(.trailing)
-                            TextField("Ex. 708-123-1234", text:$phone)
-                                .textFieldStyle(RoundedBorderTextFieldStyle())
-                                .padding(.trailing)
-                        }
-                    }
-                    Toggle(isOn:$league) {
-                        Text("Are you a current league memeber")
-                    }.padding()
-                    HStack {
-                        VStack(alignment: .leading) {
-                            Text("Username:")
-                            Text("Password:").padding(.top, 22)
-                            Text("Confirm:").padding(.top, 22)
-                        }.padding(.leading, 10)
-                        VStack {
-                            TextField("Enter desired username", text:$username)
+        VStack{
+            Text("").navigationBarTitle("REGISTRATION").navigationBarHidden(false)
+                ScrollView {
+                        Image("logoheader")
+                            .resizable()
+                            .scaledToFit()
+                           Spacer()
+                        HStack {
+                            VStack(alignment: .leading){
+                                Text("First Name:").padding(.top, 22)
+                                Text("Last Name:").padding(.top, 22)
+                                Text("Birthdate:").padding(.top, 24)
+                                Text("Email:").padding(.top, 24)
+                                Text("Phone:").padding(.top, 24)
+                                Spacer()
+                            }.padding(.leading, 10)
+                            VStack {
+                                TextField("Enter first name", text:$firstname)
+                                    .textFieldStyle(RoundedBorderTextFieldStyle())
+                                    .padding([.trailing,.top])
+                                TextField("Enter last name", text:$lastname)
                                     .textFieldStyle(RoundedBorderTextFieldStyle())
                                     .padding(.trailing)
-                            SecureField("Enter password", text:$password)
+                                TextField("Ex. 03/29/1993", text:$birthdate)
                                     .textFieldStyle(RoundedBorderTextFieldStyle())
                                     .padding(.trailing)
-                            SecureField("Re-type password", text:$conpass)
+                                TextField("Ex. bowling123@yahoo.com", text:$email)
                                     .textFieldStyle(RoundedBorderTextFieldStyle())
-                                .padding([.trailing, .bottom])
-                        }
-                    }
-                    Button(action: {
-                        
-                        let isValidateName = self.validation.validateName(name: self.firstname)
-                        let isValidateLastName = self.validation.validateLastName(name: self.lastname)
-                        let isValidateBirthdate = self.validation.validateBirthdate(name: self.birthdate)
-                        let isValidatePhone = self.validation.validatePhone(name: self.phone)
-                        let isValidateUsername = self.validation.validateUsername(name: self.username)
-                        let isValidatePassword = self.validation.validatePassword(name: self.password)
-                        
-                        if (isValidateName == false) {
-                           self.message = "First name must be between 2 and 12 alphabetical characters"
-                           self.showingAlert = true
-                        }
-                        else if (isValidateLastName == false) {
-                            self.message = "Last name must be between 2 and 12 alphabetical characters"
-                            self.showingAlert = true
-                        }
-                        else if (isValidateBirthdate == false) {
-                            self.message = "Birthdate format must be 00/00/0000"
-                            self.showingAlert = true
-                        }
-                        else if (self.email.count == 0) {
-                            self.message = "Email field cannot be empty"
-                            self.showingAlert = true
-                        }
-                        else if (isValidatePhone == false) {
-                            self.message = "Phone number format must be 000-000-0000"
-                            self.showingAlert = true
-                        }
-                        else if (self.username.count < 3 || self.username.count > 12) {
-                            self.message = "Username must be between 3 and 12 characters"
-                            self.showingAlert = true
-                        }
-                        else if (isValidateUsername == false) {
-                            self.message = "Username must not have special characters"
-                            self.showingAlert = true
-                        }
-                        else if (self.password.count < 6 || self.password.count > 12) {
-                            self.message = "Password must be between 6 and 12 characters"
-                            self.showingAlert = true
-                        }
-                        else if (isValidatePassword == false) {
-                            self.message = "Password must not use special characters"
-                            self.showingAlert = true
-                        }
-                        else if (self.password != self.conpass) {
-                            self.message = "Passwords do not match"
-                            self.showingAlert = true
-                        }
-                        else {
-                            self.RegistrationRequest(username: self.username, password: self.conpass, fname: self.firstname, lname: self.lastname, birthday: self.birthdate, email: self.email, phone: self.phone, league: self.league, centerID: self.CenterID)
+                                    .padding(.trailing)
+                                TextField("Ex. 708-123-1234", text:$phone)
+                                    .textFieldStyle(RoundedBorderTextFieldStyle())
+                                    .padding(.trailing)
                             }
-                    }) {
-                        Text("SUBMIT")
-                    }.frame(minWidth: 0, maxWidth: .infinity, maxHeight: 40)
-                        .background(Color(red: 200/255, green: 211/255, blue: 211/255, opacity: 1.0))
-                        .cornerRadius(10)
-                        .padding([.horizontal, .top])
-                }
-        }.background(Image("approach")
+                        }
+                        Toggle(isOn:$league) {
+                            Text("Are you a current league memeber")
+                        }.padding()
+                        HStack {
+                            VStack(alignment: .leading) {
+                                Text("Username:")
+                                Text("Password:").padding(.top, 22)
+                                Text("Confirm:").padding(.top, 22)
+                            }.padding(.leading, 10)
+                            VStack {
+                                TextField("Enter desired username", text:$username)
+                                        .textFieldStyle(RoundedBorderTextFieldStyle())
+                                        .padding(.trailing)
+                                SecureField("Enter password", text:$password)
+                                        .textFieldStyle(RoundedBorderTextFieldStyle())
+                                        .padding(.trailing)
+                                SecureField("Re-type password", text:$conpass)
+                                        .textFieldStyle(RoundedBorderTextFieldStyle())
+                                    .padding([.trailing, .bottom])
+                            }
+                        }
+                        Button(action: {
+                            
+                            let isValidateName = self.validation.validateName(name: self.firstname)
+                            let isValidateLastName = self.validation.validateLastName(name: self.lastname)
+                            let isValidateBirthdate = self.validation.validateBirthdate(name: self.birthdate)
+                            let isValidatePhone = self.validation.validatePhone(name: self.phone)
+                            let isValidateUsername = self.validation.validateUsername(name: self.username)
+                            let isValidatePassword = self.validation.validatePassword(name: self.password)
+                            
+                            if (isValidateName == false) {
+                               self.message = "First name must be between 2 and 12 alphabetical characters"
+                               self.showingAlert = true
+                            }
+                            else if (isValidateLastName == false) {
+                                self.message = "Last name must be between 2 and 12 alphabetical characters"
+                                self.showingAlert = true
+                            }
+                            else if (isValidateBirthdate == false) {
+                                self.message = "Birthdate format must be 00/00/0000"
+                                self.showingAlert = true
+                            }
+                            else if (self.email.count == 0) {
+                                self.message = "Email field cannot be empty"
+                                self.showingAlert = true
+                            }
+                            else if (isValidatePhone == false) {
+                                self.message = "Phone number format must be 000-000-0000"
+                                self.showingAlert = true
+                            }
+                            else if (self.username.count < 3 || self.username.count > 12) {
+                                self.message = "Username must be between 3 and 12 characters"
+                                self.showingAlert = true
+                            }
+                            else if (isValidateUsername == false) {
+                                self.message = "Username must not have special characters"
+                                self.showingAlert = true
+                            }
+                            else if (self.password.count < 6 || self.password.count > 12) {
+                                self.message = "Password must be between 6 and 12 characters"
+                                self.showingAlert = true
+                            }
+                            else if (isValidatePassword == false) {
+                                self.message = "Password must not use special characters"
+                                self.showingAlert = true
+                            }
+                            else if (self.password != self.conpass) {
+                                self.message = "Passwords do not match"
+                                self.showingAlert = true
+                            }
+                            else {
+                                self.RegistrationRequest(username: self.username, password: self.conpass, fname: self.firstname, lname: self.lastname, birthday: self.birthdate, email: self.email, phone: self.phone, league: self.league, centerID: self.CenterID)
+                                }
+                        }) {
+                            Text("SUBMIT")
+                        }.frame(minWidth: 0, maxWidth: .infinity, maxHeight: 40)
+                            .background(Color(red: 200/255, green: 211/255, blue: 211/255, opacity: 1.0))
+                            .cornerRadius(10)
+                            .padding()
+                    }
+            }.modifier(AdaptsToKeyboard())
+            .background(Image("approach")
             .resizable()
             .clipped()
             .edgesIgnoringSafeArea(.all))
             .alert(isPresented: $showingAlert) {
                 Alert(title: Text("Registration"), message: Text((message)), dismissButton: .default(Text("OK")))
-            }
         }
+    }
     
     func RegistrationRequest(username: String, password: String, fname: String, lname: String, birthday: String, email: String, phone: String, league: Bool, centerID: String) {
     

@@ -7,36 +7,11 @@
 //
 
 import SwiftUI
+import Combine
 import CoreImage.CIFilterBuiltins
 
-/*struct MainLoyaltyView: View {
-    @State var showMenu: Bool = false
-    var body: some View {
-        let drag = DragGesture()
-            .onEnded {
-                if $0.translation.width < -100 {
-                    withAnimation {
-                        self.showMenu = false
-                    }
-                }
-            }
-        return GeometryReader { geometry in
-            ZStack(alignment: .leading) {
-                LoyaltyView(showMenu: self.$showMenu)
-                    .frame(width: geometry.size.width, height: geometry.size.height)
-                    .offset(x: self.showMenu ? geometry.size.width/2 : 0)
-                    .disabled(self.showMenu ? true : false)
-                if self.showMenu {
-                    MenuView(showMenu: self.$showMenu)
-                        .frame(width: geometry.size.width/2)
-                        .transition(.move(edge: .leading))
-                }
-            }.gesture(drag)
-        }
-    }
-}*/
 struct LoyaltyView: View {
-    
+    @EnvironmentObject var settings: UserSettings
     let context = CIContext()
     let filter = CIFilter.qrCodeGenerator()
     @State var AuthToken: String = (UserDefaults.standard.string(forKey: "AuthToken") ?? nil) ?? ""
@@ -48,39 +23,17 @@ struct LoyaltyView: View {
     @State var showingAlert: Bool = false
     @State var showAccount: Bool = false
     @State var showInfo: Bool = false
-    //@Binding var showMenu: Bool
     let CenterId: String = "PalosLanes"
     
     var body: some View {
         VStack {
-            //if self.showMenu {
             Text("").navigationBarTitle("LOYALTY",displayMode: .inline)
                         .navigationBarItems(trailing:
                 NavigationLink(destination: AccountView()){
                     Text("My Account")})
-                    //.navigationBarHidden(true)
-                    //.navigationBarBackButtonHidden(true)
-                /*.navigationBarItems(leading:
-                    Button(action: {
-                        withAnimation {
-                            self.showMenu.toggle()
-                        }
-                    }, label:  {Image(systemName: "sidebar.left")}),trailing: Button(action: {
-                            self.showAccount = true
-                        }, label: {Image(systemName: "person")})
-                    )*/
-            /*else {
-                Text("").navigationBarTitle("HOME")
-                .navigationBarBackButtonHidden(true)
-                .navigationBarItems(leading:
-                    Button(action: {
-                        self.showMenu.toggle()
-                    }, label:  {Image(systemName: "sidebar.left")}),trailing: Button(action: {
-                            self.showAccount = true
-                        }, label: {Image(systemName: "person")})
-                    )
-            }*/
-            Image("maskinunit").resizable().scaledToFit()
+            Image("maskinunit")
+                .resizable()
+                .scaledToFit()
             Text("Points").foregroundColor(Color(red: 75/255, green: 2/255, blue:38/255))
                 .padding(.top)
             Text("\(points)")
@@ -89,6 +42,7 @@ struct LoyaltyView: View {
                 .padding(.bottom)
                 .foregroundColor(Color(red: 75/255, green: 2/255, blue:38/255))
             Button(action: {
+                print(self.settings.user)
                 self.GetUserData(AuthToken: self.AuthToken)
             }) {
                 Text("Update Points")
@@ -184,8 +138,19 @@ struct LoyaltyView: View {
 struct InfoView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
-            Text("Loyalty Points").font(.title).padding()
+            Text("LOYALTY POINTS")
+                .font(.largeTitle)
+                .padding()
             Text("Loyalty points are a great way to earn something every single time you bowl with us. Once you have enough points you can redeem them for cool stuff!")
+                .padding(.horizontal)
+            Text("Add Points")
+                .font(.title).padding()
+            Text("Each game of bowling paid for = 100 points. No limit on number of points you can earn per visit!")
+                .padding(.horizontal)
+            Text("Redeem Points")
+                .font(.title).padding()
+            Text("Every game you choose to redeem with points removes 500 points from your account. No limit on number of games you can redeem!")
+                .padding(.horizontal)
             Spacer()
         }
     }

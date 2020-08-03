@@ -9,6 +9,7 @@
 import SwiftUI
 
 struct AccountView: View {
+    @EnvironmentObject var settings: UserSettings
     @State var points: Int = UserDefaults.standard.integer(forKey: "SavePoints")
     @State var firstname: String = UserDefaults.standard.string(forKey: "SaveFirst") ?? ""
     @State var lastname: String = UserDefaults.standard.string(forKey: "SaveLast") ?? ""
@@ -22,8 +23,8 @@ struct AccountView: View {
             Text("").navigationBarTitle("ACCOUNT", displayMode: .inline)
             ScrollView {
                 Image("maskinunit")
-                        .resizable()
-                        .scaledToFit()
+                    .resizable()
+                    .scaledToFill()
                 Text("Available Points: \(points)")
                     .font(.headline)
                     .fontWeight(.semibold)
@@ -64,12 +65,23 @@ struct AccountView: View {
                     .background(Color(red: 75/255, green: 2/255, blue:38/255))
                     .padding(.horizontal)
                 Spacer()
-                
+                Button(action: {
+                    print(self.settings.user)
+                    self.settings.logout()
+                    print(self.settings.user)
+                }){
+                    Text("Logout")
+                        .foregroundColor(Color(.blue))
+                }.frame(minWidth: 0, maxWidth: .infinity, maxHeight: 40)
+                .background(Color(red: 200/255, green: 211/255, blue: 211/255, opacity: 1.0))
+                .cornerRadius(10)
+                .padding()
             }
         }.background(Image("approach")
         .resizable()
         .clipped()
         .edgesIgnoringSafeArea(.all))
+        .environmentObject(settings)
         .onAppear{
             self.convertBool()
         }

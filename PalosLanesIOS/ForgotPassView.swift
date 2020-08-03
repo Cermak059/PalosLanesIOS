@@ -14,9 +14,11 @@ struct ForgotPassView: View {
     @State private var showingAlert = false
     var body: some View {
         VStack(alignment: .leading) {
+            Text("").navigationBarTitle("RECOVERY").navigationBarHidden(false)
             Image("logoheader")
                 .resizable()
                 .scaledToFit()
+            Text("1. Please enter the valid email address associated with your account and tap Send Email\n2. Once email is recieved, follow the further instructions to recover your account!").padding()
             Text("Password Reset")
                 .padding([.leading,.top])
                 .font(.title)
