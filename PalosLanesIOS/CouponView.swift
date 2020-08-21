@@ -131,7 +131,7 @@ struct CouponView: View {
     
     func GetCoupons(AuthToken: String) {
     
-    guard let url = URL(string: "http://3.15.199.174:5000/CheckAllCoupons") else {return}
+        guard let url = URL(string: "https://chicagolandbowlingservice.com/api/CheckAllCoupons") else {return}
         
         var request = URLRequest(url: url)
         request.httpMethod = "GET"
@@ -164,21 +164,21 @@ struct CouponView: View {
                     DispatchQueue.main.async {
                         self.message = "Session has expired... please login again"
                         self.showingAlert = true
-                        }
+                    }
                     return
                 }
                 if httpResponse.statusCode == 400{
                     DispatchQueue.main.async {
                         self.message = "No coupon data found"
                         self.showingAlert = true
-                        }
+                    }
                     return
                 }
                 if httpResponse.statusCode == 500{
                     DispatchQueue.main.async {
                         self.message = "Oops something went wrong... please try again later"
                         self.showingAlert = true
-                        }
+                    }
                     return
                 }
             }

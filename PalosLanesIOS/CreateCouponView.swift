@@ -138,50 +138,54 @@ struct CreateButton: View {
     }
     func CreateCoupon(CenterID: String, Hours: Int, couponName: String) {
             
-           guard let url = URL(string: "http://3.15.199.174:5000/CreateCoupon") else {return}
+        guard let url = URL(string: "https://chicagolandbowlingservice.com/api/CreateCoupon") else {return}
               
-           let body: [String:Any] = ["CenterID": CenterID, "Expires": Hours, "Coupon": couponName]
+        let body: [String:Any] = ["CenterID": CenterID, "Expires": Hours, "Coupon": couponName]
                   
-               let finalbody = try! JSONSerialization.data(withJSONObject: body)
+        guard let finalbody = try? JSONSerialization.data(withJSONObject: body) else {
+            self.message = "Data is corrupt... Please try again!"
+            self.showingAlert = true
+            return
+        }
                   
-               var request = URLRequest(url: url)
-               request.httpMethod = "POST"
-               request.httpBody = finalbody
-               request.setValue(AuthToken, forHTTPHeaderField: "X-Auth-Token")
-               request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.httpBody = finalbody
+        request.setValue(AuthToken, forHTTPHeaderField: "X-Auth-Token")
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
               
-               URLSession.shared.dataTask(with: request) { (data, response, error) in
+        URLSession.shared.dataTask(with: request) { (data, response, error) in
                   
-                   if let httpResponse = response as? HTTPURLResponse{
-                       if httpResponse.statusCode == 200{
-                        //guard let data = data else {return}
-                        //let finalData = try! JSONDecoder().decode(ServerMessage.self, from: data)
-                           DispatchQueue.main.async {
-                               self.message = "COUPON CREATED!"
-                               self.showingAlert = true
-                           }
-                           return
-                       }
-                       if httpResponse.statusCode == 400{
-                           DispatchQueue.main.async {
-                               if let data = data, let dataString = String(data: data, encoding: .utf8) {
-                                   self.message = dataString
-                                   self.showingAlert = true
-                                }
-                            }
-                            return
-                       }
-                       if httpResponse.statusCode == 401{
-                           DispatchQueue.main.async {
-                               self.message = "Unauthorized to complete this request"
-                               self.showingAlert = true
-                           }
-                           return
+            if let httpResponse = response as? HTTPURLResponse{
+                if httpResponse.statusCode == 200{
+                    //guard let data = data else {return}
+                    //let finalData = try! JSONDecoder().decode(ServerMessage.self, from: data)
+                    DispatchQueue.main.async {
+                        self.message = "COUPON CREATED!"
+                        self.showingAlert = true
+                    }
+                    return
+                }
+                if httpResponse.statusCode == 400{
+                    DispatchQueue.main.async {
+                        if let data = data, let dataString = String(data: data, encoding: .utf8) {
+                            self.message = dataString
+                            self.showingAlert = true
                         }
-                       if httpResponse.statusCode == 500{
-                           DispatchQueue.main.async {
-                               self.message = "Oops something went wrong... please try again later"
-                               self.showingAlert = true
+                    }
+                    return
+                }
+                if httpResponse.statusCode == 401{
+                    DispatchQueue.main.async {
+                        self.message = "Unauthorized to complete this request"
+                        self.showingAlert = true
+                    }
+                    return
+                }
+                if httpResponse.statusCode == 500{
+                    DispatchQueue.main.async {
+                        self.message = "Oops something went wrong... please try again later"
+                        self.showingAlert = true
                         }
                     }
                 }

@@ -127,37 +127,40 @@ func LoginRequest(username: String, password: String) {
     
     guard let url = URL(string: "https://chicagolandbowlingservice.com/api/Login") else {return}
           
-          let body: [String: String] = ["Username": username, "Password": password]
+    let body: [String: String] = ["Username": username, "Password": password]
           
-          let finalbody = try! JSONSerialization.data(withJSONObject: body)
+    guard let finalbody = try? JSONSerialization.data(withJSONObject: body) else {
+        self.message = "Data is corrupt...Please try again!"
+        self.showingAlert = true
+        return
+    }
           
-          var request = URLRequest(url: url)
-          request.httpMethod = "POST"
-          request.httpBody = finalbody
-          request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+    var request = URLRequest(url: url)
+    request.httpMethod = "POST"
+    request.httpBody = finalbody
+    request.setValue("application/json", forHTTPHeaderField: "Content-Type")
           
-          URLSession.shared.dataTask(with: request) { (data, response, error) in
+    URLSession.shared.dataTask(with: request) { (data, response, error) in
               
-              if let httpResponse = response as? HTTPURLResponse{
-                  if httpResponse.statusCode == 200{
+        if let httpResponse = response as? HTTPURLResponse{
+            if httpResponse.statusCode == 200{
+                guard let data = data else {return}
+                let finalData = try! JSONDecoder().decode(LoginMessage.self, from: data)
                     
-                    guard let data = data else {return}
-                    let finalData = try! JSONDecoder().decode(LoginMessage.self, from: data)
-                    
-                    UserDefaults.standard.set(finalData.AccessLevel, forKey: "AccessLevel")
-                    UserDefaults.standard.set(finalData.AuthToken, forKey: "AuthToken")
-                      DispatchQueue.main.async {
-                        if finalData.AccessLevel == "User" {
-                            let AuthToken: String = UserDefaults.standard.string(forKey: "AuthToken") ?? ""
-                            self.GetUserData(AuthToken: AuthToken)
-                        }
-                        else if finalData.AccessLevel == "Admin" {
-                            self.settings.adminlogin()
-                        }
+                UserDefaults.standard.set(finalData.AccessLevel, forKey: "AccessLevel")
+                UserDefaults.standard.set(finalData.AuthToken, forKey: "AuthToken")
+                DispatchQueue.main.async {
+                    if finalData.AccessLevel == "User" {
+                        let AuthToken: String = UserDefaults.standard.string(forKey: "AuthToken") ?? ""
+                        self.GetUserData(AuthToken: AuthToken)
                     }
-                    return
-                  }
-                  if httpResponse.statusCode == 400{
+                    else if finalData.AccessLevel == "Admin" {
+                        self.settings.adminlogin()
+                    }
+                }
+                return
+            }
+                if httpResponse.statusCode == 400{
                     DispatchQueue.main.async {
                         if let data = data, let dataString = String(data: data, encoding: .utf8) {
                             self.message = dataString

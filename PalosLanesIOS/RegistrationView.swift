@@ -152,21 +152,25 @@ struct RegistrationVIew: View {
     
     func RegistrationRequest(username: String, password: String, fname: String, lname: String, birthday: String, email: String, phone: String, league: Bool, centerID: String) {
     
-        guard let url = URL(string: "http://3.15.199.174:5000/Register") else {return}
+        guard let url = URL(string: "https://chicagolandbowlingservice.com/api/Register") else {return}
           
         let body: [String: Any] = ["Fname": fname, "Lname":lname, "Birthdate": birthday, "Email" : email, "Phone": phone, "League": league, "Username": username, "Password": password, "CenterID": centerID]
           
-          let finalbody = try! JSONSerialization.data(withJSONObject: body)
+        guard let finalbody = try? JSONSerialization.data(withJSONObject: body) else {
+                 self.message = "Data is corrupt... Please try again!"
+                 self.showingAlert = true
+                 return
+        }
           
-          var request = URLRequest(url: url)
-          request.httpMethod = "POST"
-          request.httpBody = finalbody
-          request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.httpBody = finalbody
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
           
-          URLSession.shared.dataTask(with: request) { (data, response, error) in
+        URLSession.shared.dataTask(with: request) { (data, response, error) in
               
-              if let httpResponse = response as? HTTPURLResponse{
-                  if httpResponse.statusCode == 200{
+            if let httpResponse = response as? HTTPURLResponse{
+                if httpResponse.statusCode == 200{
                     //guard let data = data else {return}
                     //let finalData = try! JSONDecoder().decode(ServerMessage.self, from: data)
                     DispatchQueue.main.async {
@@ -174,8 +178,8 @@ struct RegistrationVIew: View {
                         self.showingAlert = true
                     }
                     return
-                  }
-                  if httpResponse.statusCode == 400{
+                }
+                if httpResponse.statusCode == 400{
                     DispatchQueue.main.async {
                         if let data = data, let dataString = String(data: data, encoding: .utf8) {
                             self.message = dataString

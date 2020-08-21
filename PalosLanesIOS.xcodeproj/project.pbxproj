@@ -346,14 +346,14 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_ASSET_PATHS = "\"PalosLanesIOS/Preview Content\"";
-				DEVELOPMENT_TEAM = D8Y9FK67N8;
+				DEVELOPMENT_TEAM = HVF4ZB4VMS;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = PalosLanesIOS/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.example.PalosLanesIOS;
+				PRODUCT_BUNDLE_IDENTIFIER = com.example.PalosLanes;
 				PRODUCT_NAME = PalosLanes;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -366,14 +366,14 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_ASSET_PATHS = "\"PalosLanesIOS/Preview Content\"";
-				DEVELOPMENT_TEAM = D8Y9FK67N8;
+				DEVELOPMENT_TEAM = HVF4ZB4VMS;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = PalosLanesIOS/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.example.PalosLanesIOS;
+				PRODUCT_BUNDLE_IDENTIFIER = com.example.PalosLanes;
 				PRODUCT_NAME = PalosLanes;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
