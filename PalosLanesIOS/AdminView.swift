@@ -148,8 +148,6 @@ struct AdminView: View {
               
         if let httpResponse = response as? HTTPURLResponse{
             if httpResponse.statusCode == 200{
-                //guard let data = data else {return}
-                //let finalData = try! JSONDecoder().decode(ServerMessage.self, from: data)
                 DispatchQueue.main.async {
                     self.message = "SUCCESS!"
                     self.showingAlert = true
@@ -252,12 +250,9 @@ struct AddPickerView: View {
               
         if let httpResponse = response as? HTTPURLResponse{
             if httpResponse.statusCode == 200{
-                //guard let data = data else {return}
-                //let finalData = try! JSONDecoder().decode(ServerMessage.self, from: data)
                 DispatchQueue.main.async {
                     self.message = "Success"
                     self.showingAlert = true
-                    //self.presentationMode.wrappedValue.dismiss()
                 }
                 return
             }

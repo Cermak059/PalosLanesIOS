@@ -158,8 +158,6 @@ struct CreateButton: View {
                   
             if let httpResponse = response as? HTTPURLResponse{
                 if httpResponse.statusCode == 200{
-                    //guard let data = data else {return}
-                    //let finalData = try! JSONDecoder().decode(ServerMessage.self, from: data)
                     DispatchQueue.main.async {
                         self.message = "COUPON CREATED!"
                         self.showingAlert = true

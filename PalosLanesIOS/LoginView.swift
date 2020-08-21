@@ -145,8 +145,11 @@ func LoginRequest(username: String, password: String) {
         if let httpResponse = response as? HTTPURLResponse{
             if httpResponse.statusCode == 200{
                 guard let data = data else {return}
-                let finalData = try! JSONDecoder().decode(LoginMessage.self, from: data)
-                    
+                guard let finalData = try? JSONDecoder().decode(LoginMessage.self, from: data) else {
+                    self.message = "Data is corrupt...Please try again!"
+                    self.showingAlert = true
+                    return
+                }
                 UserDefaults.standard.set(finalData.AccessLevel, forKey: "AccessLevel")
                 UserDefaults.standard.set(finalData.AuthToken, forKey: "AuthToken")
                 DispatchQueue.main.async {
@@ -239,7 +242,11 @@ func VerifyToken(AuthToken: String) {
                 if httpResponse.statusCode == 200{
                     
                     guard let data = data else {return}
-                    let finalData = try! JSONDecoder().decode(DataMessage.self, from: data)
+                    guard let finalData = try? JSONDecoder().decode(DataMessage.self, from: data) else {
+                        self.message = "Data is corrupt...Please try again!"
+                        self.showingAlert = true
+                        return
+                    }
                     UserDefaults.standard.set(finalData.Points, forKey: "SavePoints")
                     UserDefaults.standard.set(finalData.Username, forKey: "SaveUsername")
                     UserDefaults.standard.set(finalData.Birthdate, forKey: "SaveBirthdate")

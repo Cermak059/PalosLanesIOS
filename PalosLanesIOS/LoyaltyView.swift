@@ -42,7 +42,6 @@ struct LoyaltyView: View {
                 .padding(.bottom)
                 .foregroundColor(Color(red: 75/255, green: 2/255, blue:38/255))
             Button(action: {
-                print(self.settings.user)
                 self.GetUserData(AuthToken: self.AuthToken)
             }) {
                 Text("Update Points")
@@ -93,16 +92,20 @@ struct LoyaltyView: View {
        
        guard let url = URL(string: "https://chicagolandbowlingservice.com/api/Users") else {return}
            
-           var request = URLRequest(url: url)
-           request.httpMethod = "GET"
-           request.setValue(AuthToken, forHTTPHeaderField: "X-Auth-Token")
+            var request = URLRequest(url: url)
+            request.httpMethod = "GET"
+            request.setValue(AuthToken, forHTTPHeaderField: "X-Auth-Token")
            
-           URLSession.shared.dataTask(with: request) { (data, response, error) in
+            URLSession.shared.dataTask(with: request) { (data, response, error) in
                
-               if let httpResponse = response as? HTTPURLResponse{
-                   if httpResponse.statusCode == 200{
-                       guard let data = data else {return}
-                       let finalData = try! JSONDecoder().decode(DataMessage.self, from: data)
+            if let httpResponse = response as? HTTPURLResponse{
+                if httpResponse.statusCode == 200{
+                    guard let data = data else {return}
+                    guard let finalData = try? JSONDecoder().decode(DataMessage.self, from: data) else {
+                        self.message = "Data is corrupt...Please try again!"
+                        self.showingAlert = true
+                        return
+                    }
                        UserDefaults.standard.set(finalData.Points, forKey: "SavePoints")
                        DispatchQueue.main.async {
                         self.points = UserDefaults.standard.integer(forKey: "SavePoints")

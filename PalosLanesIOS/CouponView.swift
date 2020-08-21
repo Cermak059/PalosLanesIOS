@@ -140,11 +140,10 @@ struct CouponView: View {
         URLSession.shared.dataTask(with: request) { (data, response, error) in
             
             if let httpResponse = response as? HTTPURLResponse{
-                guard let data = data else {return}
-                let finalData = try! JSONDecoder().decode(UsedMessage.self, from: data)
                 if httpResponse.statusCode == 200{
+                    guard let data = data else {return}
+                    let finalData = try! JSONDecoder().decode(UsedMessage.self, from: data)
                     DispatchQueue.main.async {
-                        print(finalData)
                         if finalData.Used?.contains("BOGO") ?? false {
                             self.isBOGOcoupon = false
                         }
